@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect } from 'react';
-import { Separator } from "@/components/ui/separator";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 

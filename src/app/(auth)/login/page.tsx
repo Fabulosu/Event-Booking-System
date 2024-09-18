@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 
 type Props = {
@@ -58,7 +57,7 @@ export default function LoginPage(props: Props) {
                             <Input type="password" name="password" placeholder="************" className="text-black" ref={passRef} required={true} />
                         </div>
                         {!!props.searchParams?.error && <p className="text-red-600">Authentication failed!</p>}
-                        <Button type="submit" className="mt-5 bg-emerald-500 hover:bg-emerald-600">Create account</Button>
+                        <Button type="submit" className="mt-5 bg-emerald-500 hover:bg-emerald-600">Log into your account</Button>
                     </div>
                 </div>
             </form>
