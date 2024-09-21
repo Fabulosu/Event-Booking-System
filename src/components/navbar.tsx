@@ -15,11 +15,17 @@ const Navbar: React.FC<Props> = ({ background = true }) => {
             <div className='flex flex-row items-center gap-5'>
                 <Image src="/images/logo.webp" alt="Logo" width={1024} height={1024} className="w-[40px] h-[40px] rounded-2xl" />
                 <p className="font-semibold text-2xl text-white">SwiftSeats</p>
+                <Link
+                    href="/explore"
+                    className={cn(buttonVariants({ variant: "ghost" }), "hover:bg-transparent text-white hover:text-white/75 hover:cursor-pointer")}
+                >
+                    Explore events
+                </Link>
             </div>
             <div className='flex flex-row items-center gap-5'>
                 <Link
                     href="/login"
-                    className={cn(buttonVariants({ variant: "ghost" }), "hover:bg-neutral-300 text-white")}
+                    className={cn(buttonVariants({ variant: "ghost" }), "hover:bg-neutral-300/50 hover:text-white text-white")}
                 >
                     Greetings! Sign in
                 </Link>
