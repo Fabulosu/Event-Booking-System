@@ -25,7 +25,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
                 <Separator orientation='vertical' className='bg-muted-foreground h-1/3' />
                 <Link
                     href="/explore"
-                    className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:bg-[#329c75]", "hover:bg-transparent hover:cursor-pointer")}
+                    className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]", "hover:bg-transparent hover:cursor-pointer")}
                 >
                     Explore events
                 </Link>
@@ -33,7 +33,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
             <div className='flex flex-row items-center gap-5'>
                 <Link
                     href="/login"
-                    className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:bg-neutral-300/50 hover:text-[#329c75]" : "text-white hover:bg-neutral-300/50 hover:text-[#329c75]")}
+                    className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]", "hover:bg-transparent hover:cursor-pointer")}
                 >
                     Greetings! Sign in
                 </Link>
