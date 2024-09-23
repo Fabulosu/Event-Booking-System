@@ -12,7 +12,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     try {
-        const event = await EventModel.findById(id);
+        const event = await EventModel.findById(id).populate('organizer', 'username');
         if (!event) {
             return NextResponse.json({ error: 'Event not found' }, { status: 404 });
         }
