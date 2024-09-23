@@ -100,7 +100,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                 height="277"
                                 loading="lazy"
                                 allowFullScreen
-                                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCiwWqNY1Hfi__z6QgnXnTorCEpHpci-_U&q=Hotel Central Pascani,Romania`}
+                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.GOOGLE_MAPS_API}&q=Grand Hotel Bucharest,Romania`}
                                 className="my-4 border-0"
                                 style={{ border: 0 }}
                             />
