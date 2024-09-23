@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.0.1",
+    "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "axios": "^1.7.7",

@@ -19,7 +19,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
                     href="/"
                     className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]", "hover:bg-transparent hover:cursor-pointer flex flex-row gap-3")}
                 >
-                    <Image src="/images/logo.webp" alt="Logo" width={1024} height={1024} className="w-[40px] h-[40px] rounded-2xl" />
+                    <Image src="/images/logo.webp" alt="Logo" width={1024} height={1024} className="w-[40px] h-[40px] -ml-4 rounded-2xl" />
                     <p className={cn("font-semibold text-2xl", background ? "text-black" : "text-white")}>SwiftSeats</p>
                 </Link>
                 <Separator orientation='vertical' className='bg-muted-foreground h-1/3' />
