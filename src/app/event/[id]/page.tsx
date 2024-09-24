@@ -59,7 +59,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                         <Image src="/images/mock.png" fill={true} alt="Mock event image" className="object-fill" />
                     </div>
                     <div className="flex flex-row gap-2">
-                        <div className="w-1/2 flex flex-col gap-10">
+                        <div className="w-1/2 flex flex-col gap-5">
                             <div className="flex flex-col gap-2">
                                 <h1 className="font-semibold text-4xl">{event.title}</h1>
                                 <p className="text-wrap w-[800px]">{event.description}</p>
@@ -100,7 +100,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                 height="277"
                                 loading="lazy"
                                 allowFullScreen
-                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.GOOGLE_MAPS_API}&q=Grand Hotel Bucharest,Romania`}
+                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=Grand Hotel Bucharest,Romania`}
                                 className="my-4 border-0"
                                 style={{ border: 0 }}
                             />
