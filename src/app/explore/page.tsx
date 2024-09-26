@@ -1,5 +1,5 @@
 "use client";
-
+import { Suspense } from 'react';
 import Navbar from "@/components/navbar";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -75,7 +75,9 @@ export default function EventsPage() {
                         Find Events
                     </Button>
                 </div>
-                <Events />
+                <Suspense fallback={<div>Loading Events...</div>}>
+                    <Events />
+                </Suspense>
             </div>
         </div>
     );
