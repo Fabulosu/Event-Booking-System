@@ -34,16 +34,16 @@ export default function EventsPage() {
     };
 
     return (
-        <div className="relative w-full h-full">
-            <Navbar className="fixed" />
+        <div className="w-full h-full">
+            <Navbar className="fixed w-full z-50" />
             <Image
                 src="/images/explorebg.png"
                 width={1920}
                 height={446}
                 alt="background"
-                className="w-full -z-10 pt-20"
+                className="w-full object-cover h-[250px] md:h-[446px] -z-10 pt-20"
             />
-            <div className="absolute w-full h-full inset-0 flex flex-col gap-10 pt-48">
+            <div className="relative w-full h-full inset-0 flex flex-col gap-10 -mt-56 sm:-mt-64">
                 <h1 className="text-white text-5xl w-[600px] font-bold text-left text-wrap ml-[21.54rem]">
                     Discover events for all the things you love!
                 </h1>

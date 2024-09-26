@@ -55,11 +55,10 @@ const Events: React.FC = () => {
     return (
         <div className="flex justify-center">
             {events.length > 0 ? (
-                <div className="grid grid-cols-3 gap-4 gap-y-20 mt-40 mb-20 mx-60">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 gap-y-10 md:gap-y-20 mt-10 sm:mt-20 mb-20 mx-4 md:mx-10 lg:mx-20">
                     {events.map((event) => (
                         <Event key={event._id} data={event} />
-                    ))
-                    }
+                    ))}
                 </div>
             ) : (
                 <div className="flex items-center justify-center h-96">
