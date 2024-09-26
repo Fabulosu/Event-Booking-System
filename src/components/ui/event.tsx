@@ -4,14 +4,22 @@ import { FaRegClock } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
 import Link from 'next/link';
 
+interface EventData {
+    _id: string;
+    date: string | Date;
+    title: string;
+    price: number;
+    location: string;
+}
+
 interface Props {
-    data: any
+    data: EventData
 }
 
 const Event: React.FC<Props> = ({ data }) => {
 
     return (
-        <Link key={data._id} href={`/event/${data._id}`} className="h-[400px] w-[400px] flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
+        <Link href={`/event/${data._id}`} className="h-[400px] w-[400px] flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
             <div className="relative">
                 <Image
                     src="/images/mockhead.png"

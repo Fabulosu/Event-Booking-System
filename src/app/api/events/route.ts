@@ -2,6 +2,12 @@ import { dbConnect } from "@/utils/database";
 import { EventModel } from "@/utils/models";
 import { NextRequest, NextResponse } from "next/server";
 
+interface EventQuery {
+    category?: { $regex: string; $options: string };
+    location?: { $regex: string; $options: string };
+    title?: { $regex: string; $options: string };
+}
+
 export async function GET(req: NextRequest) {
 
     const url = new URL(req.url);
@@ -10,7 +16,7 @@ export async function GET(req: NextRequest) {
     const name = url.searchParams.get("name");
 
     await dbConnect();
-    const query: any = {};
+    const query: EventQuery = {};
 
     if (category) {
         query.category = { $regex: category, $options: "i" };

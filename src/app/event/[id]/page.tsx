@@ -54,29 +54,32 @@ export default function EventPage({ params }: { params: { id: string } }) {
         <div className="relative w-full h-full">
             <Navbar className="relative" />
             {event ? (
-                <div className="flex flex-col px-12">
-                    <div className="relative w-full h-[500px]">
-                        <Image src="/images/mock.png" fill={true} alt="Mock event image" className="object-fill" />
+                <div className="flex flex-col px-4 md:px-12">
+                    <div className="relative w-full h-[300px] md:h-[500px]">
+                        <Image src="/images/mock.png" fill={true} alt="Mock event image" className="object-cover" />
                     </div>
-                    <div className="flex flex-row gap-2">
-                        <div className="w-1/2 flex flex-col gap-5">
+                    <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-6">
+                        <div className="w-full lg:w-1/2 flex flex-col gap-5">
                             <div className="flex flex-col gap-2">
-                                <h1 className="font-semibold text-4xl">{event.title}</h1>
-                                <p className="text-wrap w-[800px]">{event.description}</p>
+                                <h1 className="font-semibold text-2xl lg:text-4xl">{event.title}</h1>
+                                <p className="w-full lg:w-full text-justify">{event.description}</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex items-center gap-2">
                                 <Avatar>
                                     <AvatarImage src="https://github.com/shadcn.png" />
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
-                                <div className="flex flex-col h-10 justify-between -space-y-2">
-                                    <p className="text-gray-600 ">Organized by</p>
+                                <div className="flex flex-col">
+                                    <p className="text-gray-600">Organized by</p>
                                     <p className="font-semibold">{event.organizer.username}</p>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-1">
-                                <p className="flex flex-row gap-1 items-center"><IoLocationOutline className="text-[#24AE7C]" />{event.location}</p>
+                            <div className="flex flex-col gap-2">
                                 <p className="flex flex-row gap-1 items-center">
+                                    <IoLocationOutline className="text-[#24AE7C]" />
+                                    {event.location}
+                                </p>
+                                <p className="flex items-center gap-2">
                                     <FaRegCalendar className="text-[#24AE7C]" />
                                     {new Date(event.date).toLocaleDateString('en-US', {
                                         weekday: 'long',
@@ -84,7 +87,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                         day: 'numeric',
                                     })}
                                 </p>
-                                <p className="flex flex-row gap-1 items-center">
+                                <p className="flex items-center gap-2">
                                     <FaRegClock className="text-[#24AE7C]" />
                                     {new Date(event.date).toLocaleTimeString('en-US', {
                                         hour: 'numeric',
@@ -94,21 +97,24 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                 </p>
                             </div>
                         </div>
-                        <div className="w-1/2 flex flex-col items-end">
+
+                        <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
                             <iframe
-                                width="400"
-                                height="277"
+                                width="100%"
+                                height="300"
                                 loading="lazy"
                                 allowFullScreen
                                 src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=Grand Hotel Bucharest,Romania`}
-                                className="my-4 border-0"
+                                className="mt-4 mb-24 border-0"
                                 style={{ border: 0 }}
                             />
                         </div>
                     </div>
                 </div>
             ) : (
-                <p>No event found.</p>
+                <div className="flex justify-center items-center h-96">
+                    <p className="font-bold text-center">No event found.</p>
+                </div>
             )}
             <BottomBar price={event?.price} />
         </div>

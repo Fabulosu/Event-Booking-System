@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect } from 'react';
@@ -13,7 +13,7 @@ export default function RegisterPage() {
     const { data: session } = useSession();
     const router = useRouter();
 
-    const [errorMessage, setErrorMessage] = useState('');
+    // const [errorMessage, setErrorMessage] = useState('');
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -39,17 +39,17 @@ export default function RegisterPage() {
             try {
                 if (password.length >= 8) {
                     if (password === cpass) {
-                        const response = await axios.post("/api/auth/register", { username, email, password });
-                        if (response.data.success) {
-                            setErrorMessage("Account successfully created!")
-                        } else {
-                            setErrorMessage(response.data.message);
-                        }
+                        await axios.post("/api/auth/register", { username, email, password });
+                        // if (response.data.success) {
+                        //     setErrorMessage("Account successfully created!")
+                        // } else {
+                        //     setErrorMessage(response.data.message);
+                        // }
                     } else {
-                        setErrorMessage("Passwords do not match!");
+                        // setErrorMessage("Passwords do not match!");
                     }
                 } else {
-                    setErrorMessage("The password must be at least 8 characters!");
+                    // setErrorMessage("The password must be at least 8 characters!");
                 }
 
             } catch (error) {

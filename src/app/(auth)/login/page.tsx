@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -45,7 +45,7 @@ export default function LoginPage(props: Props) {
                 <div className="flex flex-col w-[500px] gap-20">
                     <div className="flex flex-col gap-2">
                         <h1 className="text-4xl font-semibold">Log into your account!</h1>
-                        <p className="text-[#9B9C9E]">Let's remember your bookings!</p>
+                        <p className="text-[#9B9C9E]">Let&apos;s remember your bookings!</p>
                     </div>
                     <div className="flex flex-col w-[500px] gap-5">
                         <div className="flex flex-col gap-1">

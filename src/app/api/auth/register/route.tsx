@@ -3,7 +3,7 @@ import { UserModel } from "@/utils/models";
 import { NextResponse } from "next/server";
 import * as bcrypt from "bcrypt";
 
-export async function POST(req: Request, res: NextResponse) {
+export async function POST(req: Request) {
     const { username, email, password } = await req.json();
 
     await dbConnect();

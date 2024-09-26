@@ -6,7 +6,7 @@ import { faker } from "@faker-js/faker";
 export async function POST(req: Request) {
     await dbConnect();
 
-    let mockEvents = [];
+    const mockEvents = [];
 
     try {
         const { numberOfEvents } = await req.json();

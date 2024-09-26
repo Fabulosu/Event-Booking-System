@@ -38,7 +38,7 @@ export const authConfig: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async jwt({ token, user, account, profile, trigger, isNewUser, session }) {
+        async jwt({ token, user, trigger, session }) {
             if (trigger === "update") {
                 if (session?.profilePicture) {
                     token.profilePicture = session.profilePicture;

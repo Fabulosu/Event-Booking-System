@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import Event from "./ui/event";
 
 interface Event {
@@ -51,19 +50,22 @@ const Events: React.FC = () => {
         };
 
         fetchEvents();
-    }, [location, eventName]);
+    }, [location, eventName, category]);
 
     return (
         <div className="flex justify-center">
-            <div className="grid grid-cols-3 gap-4 gap-y-20 mt-40 mb-20 mx-60">
-                {events.length > 0 ? (
-                    events.map((event) => (
-                        <Event data={event} />
+            {events.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4 gap-y-20 mt-40 mb-20 mx-60">
+                    {events.map((event) => (
+                        <Event key={event._id} data={event} />
                     ))
-                ) : (
-                    <p>No events found.</p>
-                )}
-            </div>
+                    }
+                </div>
+            ) : (
+                <div className="flex items-center justify-center h-96">
+                    <p className="font-bold text-center">No events found.</p>
+                </div>
+            )}
         </div>
     );
 };
