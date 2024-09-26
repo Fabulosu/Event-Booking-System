@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Event from "./ui/event";
 
@@ -57,23 +57,25 @@ const Events: React.FC = () => {
     }, [location, eventName, category]);
 
     return (
-        <div className="flex justify-center">
-            {loading ? (
-                <div className="flex items-center justify-center h-96">
-                    <p className="font-bold text-center">Loading events...</p>
-                </div>
-            ) : events.length > 0 ? (
-                <div className="grid grid-cols-3 gap-4 gap-y-20 mt-40 mb-20 mx-60">
-                    {events.map((event) => (
-                        <Event key={event._id} data={event} />
-                    ))}
-                </div>
-            ) : (
-                <div className="flex items-center justify-center h-96">
-                    <p className="font-bold text-center">No events found.</p>
-                </div>
-            )}
-        </div>
+        <Suspense fallback={<div>Loading Events...</div>}>
+            <div className="flex justify-center">
+                {loading ? (
+                    <div className="flex items-center justify-center h-96">
+                        <p className="font-bold text-center">Loading events...</p>
+                    </div>
+                ) : events.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-4 gap-y-20 mt-40 mb-20 mx-60">
+                        {events.map((event) => (
+                            <Event key={event._id} data={event} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-center h-96">
+                        <p className="font-bold text-center">No events found.</p>
+                    </div>
+                )}
+            </div>
+        </Suspense>
     );
 };
 
