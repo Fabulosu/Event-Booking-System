@@ -50,7 +50,7 @@ const Events: React.FC = () => {
         };
 
         fetchEvents();
-    }, [location, eventName]);
+    }, [location, eventName, category]);
 
     return (
         <div className="flex justify-center">
