@@ -29,7 +29,7 @@ const Event: React.FC<Props> = ({ data }) => {
                 />
                 <div className="absolute top-4 left-4 w-[40px] sm:w-[45px] md:w-[50px] h-[40px] sm:h-[45px] md:h-[50px] bg-[#24AE7C] text-white font-bold flex flex-col items-center justify-center rounded-full shadow-lg">
                     <p className="text-sm sm:text-base md:text-lg font-bold">{new Date(data.date).getDate()}</p>
-                    <p className="text-xs sm:text-sm md:text-base -mt-1 font-bold">{new Date(data.date).toLocaleString("en-US", { month: "short" })}</p>
+                    <p className="text-xs sm:text-sm md:text-base -mt-2 font-bold">{new Date(data.date).toLocaleString("en-US", { month: "short" })}</p>
                 </div>
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mt-1 text-wrap">{data.title}</h3>
             </div>

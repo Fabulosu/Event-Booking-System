@@ -44,14 +44,14 @@ export default function EventsPage() {
                 className="w-full object-cover h-[250px] md:h-[446px] -z-10 pt-20"
             />
             <div className="relative w-full h-full inset-0 flex flex-col gap-10 -mt-56 sm:-mt-64">
-                <h1 className="text-white text-5xl w-[600px] font-bold text-left text-wrap ml-[21.54rem]">
+                <h1 className="text-white mt-20 sm:mt-28 md:mt-0 text-xl md:text-5xl md:w-[600px] font-bold text-left text-wrap ml-4 sm:ml-[17.5%]">
                     Discover events for all the things you love!
                 </h1>
-                <div className="flex flex-row ml-[21.54rem]">
+                <div className="flex flex-row ml-4 sm:ml-[17.5%]">
                     <div className="relative">
                         <IoLocationOutline className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
                         <Input
-                            className="w-[200px] rounded-none pl-10"
+                            className="w-[120px] placeholder:text-xs placeholder:-ml-6 md:w-[200px] rounded-none pl-10"
                             name="location"
                             type="text"
                             placeholder="Enter Location"
@@ -61,7 +61,7 @@ export default function EventsPage() {
                     <div className="relative">
                         <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
                         <Input
-                            className="w-[200px] rounded-none pl-10"
+                            className="w-[120px] placeholder:text-xs placeholder:-ml-6 md:w-[200px] rounded-none pl-10"
                             name="event"
                             type="text"
                             placeholder="Search Event"
@@ -69,7 +69,7 @@ export default function EventsPage() {
                         />
                     </div>
                     <Button
-                        className="rounded-none w-[150px] bg-[#24AE7C] hover:bg-[#329c75]"
+                        className="rounded-none text-xs w-[70px] md:w-[150px] bg-[#24AE7C] hover:bg-[#329c75]"
                         onClick={handleFindEvents}
                     >
                         Find Events
