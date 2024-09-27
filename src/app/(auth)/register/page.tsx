@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
+import Link from "next/link";
 
 export default function RegisterPage() {
 
@@ -62,10 +63,13 @@ export default function RegisterPage() {
     return (
         <div className="h-full w-full flex flex-col md:flex-row justify-between bg-[#131619]">
             <form onSubmit={onSubmit} className="flex flex-col justify-center items-center text-white w-full h-full px-4 md:px-0">
-                <div className="mt-8 md:-mt-48 mb-12 md:mb-48 w-full md:w-[500px] flex flex-row items-center gap-3 justify-center md:justify-start">
+                <Link
+                    href="/"
+                    className="mt-8 md:-mt-36 mb-12 md:mb-60 w-full md:w-[500px] flex flex-row items-center gap-3 justify-center md:justify-start"
+                >
                     <Image src="/images/logo.webp" alt="Logo" width={1024} height={1024} className="w-[40px] h-[40px] rounded-2xl" />
                     <p className="font-semibold text-2xl">SwiftSeats</p>
-                </div>
+                </Link>
 
                 <div className="flex flex-col w-full md:w-[500px] gap-8 md:gap-20">
                     <div className="flex flex-col gap-2 text-center md:text-left">
