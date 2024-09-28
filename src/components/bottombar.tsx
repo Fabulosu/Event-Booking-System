@@ -43,10 +43,9 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
                     if (response.ok) {
                         const data = await response.json();
                         setEvent(data);
-                    } else {
-                        const errorData = await response.json();
                     }
                 } catch (err) {
+                    console.log(err)
                 }
             };
 
