@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button';
 import {
@@ -13,6 +14,8 @@ import { IoLocationOutline } from 'react-icons/io5';
 import { Separator } from './ui/separator';
 import { FaRegCalendar, FaRegClock } from 'react-icons/fa';
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
+import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface Props {
     price?: number;
@@ -31,7 +34,6 @@ interface Event {
 }
 
 const BottomBar: React.FC<Props> = ({ price, eventId }) => {
-
     const [event, setEvent] = useState<Event | null>(null);
     const [ticketsToBuy, setTicketsToBuy] = useState(0);
 
@@ -39,19 +41,44 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
         if (eventId) {
             const fetchEvent = async () => {
                 try {
-                    const response = await fetch(`/api/events/${eventId}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        setEvent(data);
-                    }
+                    const response = await axios.get(`/api/events/${eventId}`);
+                    setEvent(response.data);
                 } catch (err) {
-                    console.log(err)
+                    console.log(err);
                 }
             };
 
             fetchEvent();
         }
     }, [eventId]);
+
+    const handleCheckout = async () => {
+
+        const stripe = await loadStripe(
+            process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+        );
+        if (!stripe) {
+            return;
+        }
+
+        try {
+            const response = await axios.post('/api/checkout', {
+                amount: price,
+                quantity: ticketsToBuy,
+                eventName: event?.title,
+            });
+
+            if (response.status === 200) {
+                await stripe.redirectToCheckout({
+                    sessionId: response.data.id
+                });
+            } else {
+                console.error('Failed to create checkout session');
+            }
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+        }
+    };
 
     return (
         <div className='flex fixed z-50 bottom-0 px-12 justify-between items-center w-screen h-[80px] bg-white shadow-inner shadow-neutral-400'>
@@ -86,8 +113,8 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
                             </div>
                         </DialogDescription>
                     </DialogHeader>
-                    <Separator orientation='horizontal' className='w-full bg-black' />
-                    <div className='flex justify-between py-4'>
+                    <Separator orientation='horizontal' className='w-full bg-gray-600' />
+                    <div className='w-full h-full flex justify-between py-4 shadow-xl'>
                         <div className='flex flex-col justify-center'>
                             <p className='text-sm font-semibold'>{event?.title}</p>
                             <p className='font-bold text-[#24AE7C]'>{price === 0 ? "FREE" : `$${price}`}</p>
@@ -107,7 +134,7 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
                             </div>
 
                             <DialogTrigger asChild className='h-full'>
-                                <Button type="submit" className='h-full bg-[#24AE7C] hover:bg-[#329c75]'>Continue</Button>
+                                <Button type="submit" onClick={handleCheckout} className='h-full bg-[#24AE7C] hover:bg-[#329c75]'>Continue</Button>
                             </DialogTrigger>
                         </div>
                     </DialogFooter>
