@@ -8,6 +8,7 @@ import { IoLocationOutline } from 'react-icons/io5';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Event {
+    _id: string;
     title: string;
     location: string;
     date: string;
@@ -116,7 +117,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                     <p className="font-bold text-center">No event found.</p>
                 </div>
             )}
-            <BottomBar price={event?.price} />
+            <BottomBar price={event?.price} eventId={event?._id} />
         </div>
     );
 }
