@@ -36,7 +36,7 @@ interface Event {
 }
 
 const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const [event, setEvent] = useState<Event | null>(null);
     const [ticketsToBuy, setTicketsToBuy] = useState(0);
 
