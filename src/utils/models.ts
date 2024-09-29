@@ -7,7 +7,6 @@ const userSchema = new Schema({
     role: { type: String, enum: ['user', 'organizer', 'admin'], default: 'user' },
     profilePicture: { type: String },
     createdAt: { type: Date, default: Date.now },
-    bookedEvents: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
 });
 
 const eventSchema = new Schema({
@@ -20,7 +19,6 @@ const eventSchema = new Schema({
     bookedSeats: { type: Number, default: 0 },
     price: { type: Number, default: 0 }, // Optional, for paid events
     organizer: { type: Schema.Types.ObjectId, ref: 'User' },
-    attendees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     createdAt: { type: Date, default: Date.now },
 });
 

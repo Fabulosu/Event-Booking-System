@@ -16,6 +16,7 @@ import { FaRegCalendar, FaRegClock } from 'react-icons/fa';
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
+import { useSession } from 'next-auth/react';
 
 interface Props {
     price?: number;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 interface Event {
+    _id: string;
     title: string;
     location: string;
     date: string;
@@ -33,7 +35,8 @@ interface Event {
     };
 }
 
-const BottomBar: React.FC<Props> = ({ price, eventId }) => {
+const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
+    const { data: session, status } = useSession();
     const [event, setEvent] = useState<Event | null>(null);
     const [ticketsToBuy, setTicketsToBuy] = useState(0);
 
@@ -62,10 +65,13 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
         }
 
         try {
+            console.log(session)
             const response = await axios.post('/api/checkout', {
                 amount: price,
                 quantity: ticketsToBuy,
                 eventName: event?.title,
+                userId: session?.user.id,
+                eventId: event?._id,
             });
 
             if (response.status === 200) {
@@ -120,9 +126,35 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
                             <p className='font-bold text-[#24AE7C]'>{price === 0 ? "FREE" : `$${price}`}</p>
                         </div>
                         <div className='flex flex-row gap-2 items-center'>
-                            <Button variant="ghost" onClick={() => setTicketsToBuy((prev) => Math.max(0, prev - 1))}><CiCircleMinus size={30} /></Button>
+                            <Button
+                                variant="ghost"
+                                onClick={() => setTicketsToBuy((prev) => Math.max(0, prev - 1))}
+                                className={ticketsToBuy === 0 ? "text-gray-600" : ""}
+                                disabled={ticketsToBuy === 0}
+                            >
+                                <CiCircleMinus size={30} />
+                            </Button>
                             <p className='text-xl'>{ticketsToBuy}</p>
-                            <Button variant="ghost" onClick={() => setTicketsToBuy((prev) => prev + 1)}><CiCirclePlus size={30} /></Button>
+                            <Button
+                                variant="ghost"
+                                onClick={() => {
+                                    if (price === 0 && ticketsToBuy < 1) {
+                                        setTicketsToBuy(ticketsToBuy + 1);
+                                    } else if (price > 0 && ticketsToBuy < 10) {
+                                        setTicketsToBuy(ticketsToBuy + 1);
+                                    }
+                                }}
+                                className={
+                                    (price === 0 && ticketsToBuy >= 1) || (price > 0 && ticketsToBuy >= 10)
+                                        ? "text-gray-600"
+                                        : ""
+                                }
+                                disabled={
+                                    (price === 0 && ticketsToBuy >= 1) || (price > 0 && ticketsToBuy >= 10)
+                                }
+                            >
+                                <CiCirclePlus size={30} />
+                            </Button>
                         </div>
                     </div>
 
@@ -134,7 +166,7 @@ const BottomBar: React.FC<Props> = ({ price, eventId }) => {
                             </div>
 
                             <DialogTrigger asChild className='h-full'>
-                                <Button type="submit" onClick={handleCheckout} className='h-full bg-[#24AE7C] hover:bg-[#329c75]'>Continue</Button>
+                                <Button type="submit" onClick={handleCheckout} disabled={ticketsToBuy === 0} className='h-full bg-[#24AE7C] hover:bg-[#329c75]'>Continue</Button>
                             </DialogTrigger>
                         </div>
                     </DialogFooter>

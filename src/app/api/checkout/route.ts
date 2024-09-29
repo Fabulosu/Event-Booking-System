@@ -9,11 +9,13 @@ interface CheckoutSessionBody {
     amount: number;
     quantity: number;
     eventName: string;
+    userId: string;
+    eventId: string;
 }
 
 export async function POST(req: NextRequest) {
     try {
-        const { amount, quantity, eventName }: CheckoutSessionBody = await req.json();
+        const { amount, quantity, eventName, userId, eventId }: CheckoutSessionBody = await req.json();
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -32,6 +34,11 @@ export async function POST(req: NextRequest) {
             mode: 'payment',
             success_url: `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.get('origin')}/cancel`,
+            metadata: {
+                userId: userId,
+                eventId: eventId,
+                quantity,
+            },
         });
         console.log(session)
         return NextResponse.json({ id: session.id }, { status: 200 });
