@@ -65,5 +65,5 @@ export const authConfig: NextAuthOptions = {
             return session;
         }
     },
-    secret: process.env.JWT_SECRET,
+    secret: process.env.NEXTAUTH_SECRET,
 }
