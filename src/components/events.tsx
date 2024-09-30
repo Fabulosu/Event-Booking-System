@@ -8,6 +8,8 @@ interface Event {
     location: string;
     date: string;
     price: number;
+    availableSeats: number;
+    bookedSeats: number;
 }
 
 const Events: React.FC = () => {
