@@ -31,17 +31,15 @@ const Event: React.FC<Props> = ({ data }) => {
                     className="w-full h-[150px] sm:h-[180px] md:h-[200px] lg:h-[250px] object-cover"
                 />
                 <DateCircle date={data.date} />
-                {/* <div className="absolute top-4 left-4 w-[40px] sm:w-[45px] md:w-[50px] h-[40px] sm:h-[45px] md:h-[50px] bg-[#24AE7C] text-white font-bold flex flex-col items-center justify-center rounded-full shadow-lg">
-                    <p className="text-sm sm:text-base md:text-lg font-bold">{new Date(data.date).getDate()}</p>
-                    <p className="text-xs sm:text-sm md:text-base -mt-2 font-bold">{new Date(data.date).toLocaleString("en-US", { month: "short" })}</p>
-                </div> */}
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mt-1 text-wrap">{data.title}</h3>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mt-1 text-wrap h-16">{data.title}</h3>
             </div>
             <div className="flex flex-col">
-                <p className="font-bold text-sm sm:text-base md:text-lg">{data.price === 0 ? "FREE" : `$${data.price}`}</p>
-                <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
-                    <IoTicketOutline /> {data.availableSeats - data.bookedSeats} Remaining
-                </p>
+                <p className="font-bold text-sm sm:text-base md:text-lg pt-5">{data.price === 0 ? "FREE" : `$${data.price}`}</p>
+                {(data.availableSeats - data.bookedSeats) < 10 && (
+                    <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
+                        <IoTicketOutline /> {data.availableSeats - data.bookedSeats} Remaining
+                    </p>
+                )}
                 <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
                     <IoLocationOutline /> {data.location.split(',')[0]}
                 </p>

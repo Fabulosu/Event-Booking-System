@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
 import { FaTimes } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Props {
     background?: boolean;
@@ -14,6 +16,8 @@ interface Props {
 }
 
 const Navbar: React.FC<Props> = ({ background = true, className }) => {
+    const { data: session, status } = useSession();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -40,12 +44,24 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
             </div>
 
             <div className='hidden md:flex flex-row items-center gap-5'>
-                <Link
-                    href="/login"
-                    className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]", "hover:bg-transparent hover:cursor-pointer")}
-                >
-                    Greetings! Sign in
-                </Link>
+                {session && status === "authenticated" ? (
+                    <Link
+                        href="/profile"
+                        className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]", "hover:bg-gray-600/50 hover:cursor-pointer flex flex-row items-center gap-2")}>
+                        <Avatar className='w-[30px] h-[30px]'>
+                            <AvatarImage src={session.user.profilePicture} />
+                            <AvatarFallback className={background ? "text-white bg-[#329c75]" : "text-black bg-white"}>{session.user.username.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <p className='font-semibold'>{session.user.username}</p>
+                    </Link>
+                ) : (
+                    <Link
+                        href="/login"
+                        className="text-white hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer"
+                    >
+                        Greetings! Sign in
+                    </Link>
+                )}
                 <Link
                     href="/events/new"
                     className={cn(buttonVariants({ size: "lg" }), "bg-[#24AE7C] hover:bg-[#329c75] flex gap-2 font-bold")}
@@ -69,21 +85,31 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
             >
                 <Link
                     href="/explore"
-                    className="text-black hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer"
+                    className="text-black hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer  transition-all"
                     onClick={toggleMenu}
                 >
                     Explore events
                 </Link>
-                <Link
-                    href="/login"
-                    className="text-black hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer"
-                    onClick={toggleMenu}
-                >
-                    Greetings! Sign in
-                </Link>
+                {session && status === "authenticated" ? (
+                    <Link
+                        href="/profile"
+                        className="text-black hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer transition-all"
+                        onClick={toggleMenu}
+                    >
+                        Your profile
+                    </Link>
+                ) : (
+                    <Link
+                        href="/login"
+                        className="text-black hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer  transition-all"
+                        onClick={toggleMenu}
+                    >
+                        Greetings! Sign in
+                    </Link>
+                )}
                 <Link
                     href="/events/new"
-                    className="bg-[#24AE7C] hover:bg-[#329c75] flex gap-2 font-bold text-white py-2 px-4 rounded"
+                    className="bg-[#24AE7C] hover:bg-[#329c75] flex gap-2 font-bold text-white py-2 px-4 rounded transition-all"
                     onClick={toggleMenu}
                 >
                     <FaCalendarMinus size={20} />Create Event

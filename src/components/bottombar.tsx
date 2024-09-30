@@ -30,6 +30,8 @@ interface Event {
     date: string;
     price: number;
     description: string;
+    availableSeats: number;
+    bookedSeats: number;
     organizer: {
         username: string;
     };
@@ -86,6 +88,12 @@ const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
         }
     };
 
+    const maxTickets = event ? event.availableSeats - event.bookedSeats : 0;
+    const freeTicketLimit = 1;
+    const paidTicketLimit = 10;
+    const effectiveLimit = price === 0 ? freeTicketLimit : paidTicketLimit;
+    const finalMaxLimit = Math.min(maxTickets, effectiveLimit);
+
     return (
         <div className='flex fixed z-50 bottom-0 px-12 justify-between items-center w-screen h-[80px] bg-white shadow-inner shadow-neutral-400'>
             <p className="font-bold text-2xl">{price === 0 ? "FREE" : `$${price}`}</p>
@@ -137,21 +145,9 @@ const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
                             <p className='text-xl'>{ticketsToBuy}</p>
                             <Button
                                 variant="ghost"
-                                onClick={() => {
-                                    if (price === 0 && ticketsToBuy < 1) {
-                                        setTicketsToBuy(ticketsToBuy + 1);
-                                    } else if (price > 0 && ticketsToBuy < 10) {
-                                        setTicketsToBuy(ticketsToBuy + 1);
-                                    }
-                                }}
-                                className={
-                                    (price === 0 && ticketsToBuy >= 1) || (price > 0 && ticketsToBuy >= 10)
-                                        ? "text-gray-600"
-                                        : ""
-                                }
-                                disabled={
-                                    (price === 0 && ticketsToBuy >= 1) || (price > 0 && ticketsToBuy >= 10)
-                                }
+                                onClick={() => setTicketsToBuy((prev) => Math.min(prev + 1, finalMaxLimit))}
+                                className={ticketsToBuy >= finalMaxLimit ? "text-gray-600" : ""}
+                                disabled={ticketsToBuy >= finalMaxLimit}
                             >
                                 <CiCirclePlus size={30} />
                             </Button>
