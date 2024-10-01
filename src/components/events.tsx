@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Event from "./ui/event";
 
@@ -23,10 +23,10 @@ const Events: React.FC = () => {
     const eventName = searchParams.get("event");
     const category = searchParams.get("category");
 
-    const fetchEvents = async (page: number) => {
-        setLoading(true); // Start loading
+    const fetchEvents = useCallback(async (page: number) => {
+        setLoading(true);
         try {
-            const query: { location?: string; name?: string; category?: string; page: number } = { page };
+            const query: { location?: string; name?: string; category?: string; page: string } = { page: `${page}` };
 
             if (location) {
                 query.location = location;
@@ -40,15 +40,15 @@ const Events: React.FC = () => {
                 query.category = category;
             }
 
-            const queryString = new URLSearchParams(query as any).toString();
+            const queryString = new URLSearchParams(query as Record<string, string>).toString();
             const response = await fetch(`/api/events?${queryString}`);
             const data = await response.json();
 
             if (response.ok) {
                 if (page === 1) {
-                    setEvents(data.events); // Reset events on new query or page 1
+                    setEvents(data.events);
                 } else {
-                    setEvents((prevEvents) => [...prevEvents, ...data.events]); // Append for subsequent pages
+                    setEvents((prevEvents) => [...prevEvents, ...data.events]);
                 }
                 setCurrentPage(data.currentPage);
                 setTotalPages(data.totalPages);
@@ -58,16 +58,14 @@ const Events: React.FC = () => {
         } catch (error) {
             console.error("Error fetching events:", error);
         } finally {
-            setLoading(false); // End loading
+            setLoading(false);
         }
-    };
-
-    // Fetch events when search parameters change or page changes
-    useEffect(() => {
-        fetchEvents(1); // Fetch the first page on new search
     }, [location, eventName, category]);
 
-    // Load more events for pagination
+    useEffect(() => {
+        fetchEvents(1);
+    }, [location, eventName, category, fetchEvents]);
+
     const loadMoreEvents = () => {
         if (currentPage < totalPages && !loading) {
             fetchEvents(currentPage + 1);

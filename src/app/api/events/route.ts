@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
     const category = url.searchParams.get("category");
     const location = url.searchParams.get("location");
     const name = url.searchParams.get("name");
-    let page = parseInt(url.searchParams.get("page") || "1");  // Default to page 1 if not provided
-    let limit = parseInt(url.searchParams.get("limit") || "9"); // Default to 9 items per page
+    const page = parseInt(url.searchParams.get("page") || "1");
+    const limit = parseInt(url.searchParams.get("limit") || "9");
 
     await dbConnect();
     const query: EventQuery = {};
