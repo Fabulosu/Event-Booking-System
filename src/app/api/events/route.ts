@@ -9,11 +9,12 @@ interface EventQuery {
 }
 
 export async function GET(req: NextRequest) {
-
     const url = new URL(req.url);
     const category = url.searchParams.get("category");
     const location = url.searchParams.get("location");
     const name = url.searchParams.get("name");
+    let page = parseInt(url.searchParams.get("page") || "1");  // Default to page 1 if not provided
+    let limit = parseInt(url.searchParams.get("limit") || "9"); // Default to 9 items per page
 
     await dbConnect();
     const query: EventQuery = {};
@@ -29,8 +30,19 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const events = await EventModel.find(query);
-        return NextResponse.json(events, { status: 200 });
+        const skip = (page - 1) * limit;
+
+        const events = await EventModel.find(query)
+            .skip(skip)
+            .limit(limit);
+
+        const totalEvents = await EventModel.countDocuments(query);
+
+        return NextResponse.json({
+            events,
+            currentPage: page,
+            totalPages: Math.ceil(totalEvents / limit),
+        }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to retrieve events' }, { status: 500 });
     }

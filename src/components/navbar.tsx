@@ -71,7 +71,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
             </div>
 
             <div className='flex md:hidden items-center'>
-                <button onClick={toggleMenu} className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]")}>
+                <button onClick={toggleMenu} aria-label="Toggle navigation bar menu" className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]")}>
                     {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
                 </button>
             </div>
