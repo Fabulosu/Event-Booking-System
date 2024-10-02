@@ -6,6 +6,7 @@ interface EventQuery {
     category?: { $regex: string; $options: string };
     location?: { $regex: string; $options: string };
     title?: { $regex: string; $options: string };
+    date?: { $gte?: Date; $lt?: Date };
 }
 
 export async function GET(req: NextRequest) {
@@ -13,13 +14,15 @@ export async function GET(req: NextRequest) {
     const category = url.searchParams.get("category");
     const location = url.searchParams.get("location");
     const name = url.searchParams.get("name");
+    const dateFrom = url.searchParams.get("dateFrom");
+    const dateTo = url.searchParams.get("dateTo");
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "9");
 
     await dbConnect();
     const query: EventQuery = {};
 
-    if (category) {
+    if (category && category !== "all") {
         query.category = { $regex: category, $options: "i" };
     }
     if (location) {
@@ -27,6 +30,21 @@ export async function GET(req: NextRequest) {
     }
     if (name) {
         query.title = { $regex: name, $options: "i" };
+    }
+    if (dateFrom || dateTo) {
+        query.date = {};
+
+        if (dateFrom) {
+            query.date.$gte = new Date(dateFrom);
+        }
+
+        if (dateTo) {
+            query.date.$lt = new Date(dateTo);
+        }
+
+        if (Object.keys(query.date).length === 0) {
+            delete query.date;
+        }
     }
 
     try {

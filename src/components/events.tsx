@@ -22,11 +22,13 @@ const Events: React.FC = () => {
     const location = searchParams.get("location");
     const eventName = searchParams.get("event");
     const category = searchParams.get("category");
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
 
     const fetchEvents = useCallback(async (page: number) => {
         setLoading(true);
         try {
-            const query: { location?: string; name?: string; category?: string; page: string } = { page: `${page}` };
+            const query: { location?: string; name?: string; category?: string; page: string; dateFrom?: string; dateTo?: string } = { page: `${page}` };
 
             if (location) {
                 query.location = location;
@@ -38,6 +40,14 @@ const Events: React.FC = () => {
 
             if (category) {
                 query.category = category;
+            }
+
+            if (dateFrom) {
+                query.dateFrom = dateFrom;
+            }
+
+            if (dateTo) {
+                query.dateTo = dateTo;
             }
 
             const queryString = new URLSearchParams(query as Record<string, string>).toString();
@@ -56,15 +66,15 @@ const Events: React.FC = () => {
                 console.error("Failed to fetch events:", data.error);
             }
         } catch (error) {
-            console.error("Error fetching events:", error);
+            console.error("An error occurred:", error);
         } finally {
             setLoading(false);
         }
-    }, [location, eventName, category]);
+    }, [location, eventName, category, dateFrom, dateTo]);
 
     useEffect(() => {
         fetchEvents(1);
-    }, [location, eventName, category, fetchEvents]);
+    }, [location, eventName, category, dateFrom, dateTo, fetchEvents]);
 
     const loadMoreEvents = () => {
         if (currentPage < totalPages && !loading) {
@@ -73,7 +83,7 @@ const Events: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col -ml-24 items-center">
             {events.length > 0 ? (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 gap-y-10 md:gap-y-20 mt-10 sm:mt-20 mb-10 mx-4 md:mx-10 lg:mx-20">

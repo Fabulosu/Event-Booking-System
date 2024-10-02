@@ -21,7 +21,7 @@ interface Props {
 
 const Event: React.FC<Props> = ({ data }) => {
     return (
-        <Link href={`/event/${data._id}`} className="h-[300px] sm:h-[350px] md:h-[400px] w-full sm:w-[300px] lg:w-[350px] xl:w-[400px] flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
+        <Link href={`/event/${data._id}`} className="h-[300px] sm:h-[350px] md:h-[439px] w-full sm:w-[300px] lg:w-[350px] xl:w-[400px] flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
             <div className="relative">
                 <Image
                     src="/images/mockhead.png"

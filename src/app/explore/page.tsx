@@ -6,14 +6,17 @@ import Image from "next/image";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 import Events from "@/components/events";
+import Filter from '@/components/ui/filter-card';
+import { DateRange } from 'react-day-picker';
 
 export default function EventsPage() {
     const router = useRouter();
     const locationRef = useRef<HTMLInputElement>(null);
     const eventRef = useRef<HTMLInputElement>(null);
+    const searchParams = useSearchParams();
 
     const handleFindEvents = () => {
         const location = locationRef.current?.value;
@@ -31,6 +34,24 @@ export default function EventsPage() {
 
         const queryString = new URLSearchParams(query).toString();
         router.push(`/explore${queryString ? `?${queryString}` : ''}`);
+    };
+
+    const handleFilterChange = (filters: { category?: string; date?: DateRange }) => {
+        const currentQuery = new URLSearchParams(searchParams.toString());
+
+        if (filters.category) {
+            currentQuery.set('category', filters.category);
+        }
+
+        if (filters.date?.from) {
+            currentQuery.set('dateFrom', filters.date.from.toISOString());
+        }
+
+        if (filters.date?.to) {
+            currentQuery.set('dateTo', filters.date.to.toISOString());
+        }
+
+        router.push(`/explore?${currentQuery.toString()}`);
     };
 
     return (
@@ -75,9 +96,12 @@ export default function EventsPage() {
                         Find Events
                     </Button>
                 </div>
-                <Suspense fallback={<div>Loading Events...</div>}>
-                    <Events />
-                </Suspense>
+                <div className="w-full flex flex-row">
+                    <Filter onFilterChange={handleFilterChange} />
+                    <Suspense fallback={<div>Loading Events...</div>}>
+                        <Events />
+                    </Suspense>
+                </div>
             </div>
         </div>
     );
