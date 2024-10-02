@@ -97,7 +97,9 @@ export default function EventsPage() {
                     </Button>
                 </div>
                 <div className="w-full flex flex-row">
-                    <Filter onFilterChange={handleFilterChange} />
+                    <Suspense>
+                        <Filter onFilterChange={handleFilterChange} />
+                    </Suspense>
                     <Suspense fallback={<div>Loading Events...</div>}>
                         <Events />
                     </Suspense>
