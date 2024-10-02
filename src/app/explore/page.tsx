@@ -12,29 +12,9 @@ import Events from "@/components/events";
 import Filter from '@/components/ui/filter-card';
 import { DateRange } from 'react-day-picker';
 
-export default function EventsPage() {
+function SearchParamsHandler() {
     const router = useRouter();
-    const locationRef = useRef<HTMLInputElement>(null);
-    const eventRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
-
-    const handleFindEvents = () => {
-        const location = locationRef.current?.value;
-        const event = eventRef.current?.value;
-
-        const query: { location?: string; event?: string } = {};
-
-        if (location && location.length > 0) {
-            query.location = location;
-        }
-
-        if (event && event.length > 0) {
-            query.event = event;
-        }
-
-        const queryString = new URLSearchParams(query).toString();
-        router.push(`/explore${queryString ? `?${queryString}` : ''}`);
-    };
 
     const handleFilterChange = (filters: { category?: string; date?: DateRange }) => {
         const currentQuery = new URLSearchParams(searchParams.toString());
@@ -52,6 +32,32 @@ export default function EventsPage() {
         }
 
         router.push(`/explore?${currentQuery.toString()}`);
+    };
+
+    return <Filter onFilterChange={handleFilterChange} />;
+}
+
+export default function EventsPage() {
+    const router = useRouter();
+    const locationRef = useRef<HTMLInputElement>(null);
+    const eventRef = useRef<HTMLInputElement>(null);
+
+    const handleFindEvents = () => {
+        const location = locationRef.current?.value;
+        const event = eventRef.current?.value;
+
+        const query: { location?: string; event?: string } = {};
+
+        if (location && location.length > 0) {
+            query.location = location;
+        }
+
+        if (event && event.length > 0) {
+            query.event = event;
+        }
+
+        const queryString = new URLSearchParams(query).toString();
+        router.push(`/explore${queryString ? `?${queryString}` : ''}`);
     };
 
     return (
@@ -97,8 +103,8 @@ export default function EventsPage() {
                     </Button>
                 </div>
                 <div className="w-full flex flex-row">
-                    <Suspense>
-                        <Filter onFilterChange={handleFilterChange} />
+                    <Suspense fallback={<div>Loading Filters...</div>}>
+                        <SearchParamsHandler />
                     </Suspense>
                     <Suspense fallback={<div>Loading Events...</div>}>
                         <Events />
