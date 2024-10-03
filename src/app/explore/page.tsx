@@ -62,7 +62,7 @@ export default function EventsPage() {
 
     return (
         <div>
-            <Navbar className="fixed w-full z-50" />
+            <Navbar className="absolute w-full z-50" />
             <Image
                 src="/images/explorebg.png"
                 width={1920}
