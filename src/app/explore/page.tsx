@@ -103,7 +103,7 @@ export default function EventsPage() {
                     </Button>
                 </div>
             </div>
-            <div className="w-full flex flex-col -mt-10 items-center lg:flex-row lg:items-start md:mt-20 lg:mt-32">
+            <div className="w-full flex flex-col -mt-10 items-center lg:flex-row lg:items-start gap-6 lg:gap-0 md:mt-20 lg:mt-32">
                 <Suspense fallback={<div>Loading Filters...</div>}>
                     <SearchParamsHandler />
                 </Suspense>

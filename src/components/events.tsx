@@ -85,7 +85,7 @@ const Events: React.FC = () => {
     return (
         <div className="flex flex-col items-center">
             {events.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-2">
                     {events.map((event) => (
                         <Event key={event._id} data={event} />
                     ))}

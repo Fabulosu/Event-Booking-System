@@ -128,7 +128,7 @@ const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
                         </DialogDescription>
                     </DialogHeader>
                     <Separator orientation='horizontal' className='w-full bg-gray-600' />
-                    <div className='w-full h-full flex justify-between py-4 shadow-xl'>
+                    <div className='w-full h-full flex justify-between py-4 shadow-xl p-2'>
                         <div className='flex flex-col justify-center'>
                             <p className='text-sm font-semibold'>{event?.title}</p>
                             <p className='font-bold text-[#24AE7C]'>{price === 0 ? "FREE" : `$${price}`}</p>
