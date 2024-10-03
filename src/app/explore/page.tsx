@@ -61,7 +61,7 @@ export default function EventsPage() {
     };
 
     return (
-        <div className="w-full h-full">
+        <div>
             <Navbar className="fixed w-full z-50" />
             <Image
                 src="/images/explorebg.png"
@@ -70,15 +70,15 @@ export default function EventsPage() {
                 alt="background"
                 className="w-full object-cover h-[250px] md:h-[446px] -z-10 pt-20"
             />
-            <div className="relative w-full h-full inset-0 flex flex-col gap-10 -mt-56 sm:-mt-64">
-                <h1 className="text-white mt-20 sm:mt-28 md:mt-0 text-xl md:text-5xl md:w-[600px] font-bold text-left text-wrap ml-4 sm:ml-[17.5%]">
+            <div className='flex flex-col w-full lg:ml-64 -mt-36 md:-mt-64 justify-center'>
+                <h1 className='text-white text-center lg:text-left lg:pl-2 w-[500px] lg:text-4xl text-xl font-bold'>
                     Discover events for all the things you love!
                 </h1>
-                <div className="flex flex-row ml-4 gap-[0.4] sm:gap-0 sm:ml-[17.5%]">
-                    <div className="relative">
+                <div className='flex flex-row items-center mt-6 px-2'>
+                    <div className='relative'>
                         <IoLocationOutline className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
                         <Input
-                            className="w-[120px] placeholder:text-xs placeholder:-ml-6 md:w-[200px] rounded-none pl-10"
+                            className="w-[120px] placeholder:text-xs md:w-auto rounded-none pl-10"
                             name="location"
                             type="text"
                             placeholder="Enter Location"
@@ -88,7 +88,7 @@ export default function EventsPage() {
                     <div className="relative">
                         <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
                         <Input
-                            className="w-[120px] placeholder:text-xs placeholder:-ml-6 md:w-[200px] rounded-none pl-10"
+                            className="w-[120px] placeholder:text-xs md:w-auto rounded-none pl-10"
                             name="event"
                             type="text"
                             placeholder="Search Event"
@@ -96,20 +96,21 @@ export default function EventsPage() {
                         />
                     </div>
                     <Button
-                        className="rounded-none text-xs w-[70px] md:w-[150px] bg-[#24AE7C] hover:bg-[#329c75]"
+                        className="rounded-none text-xs w-[65px] md:w-[150px] bg-[#24AE7C] hover:bg-[#329c75]"
                         onClick={handleFindEvents}
                     >
-                        Find Events
+                        Search
                     </Button>
                 </div>
-                <div className="w-full flex flex-row">
-                    <Suspense fallback={<div>Loading Filters...</div>}>
-                        <SearchParamsHandler />
-                    </Suspense>
-                    <Suspense fallback={<div>Loading Events...</div>}>
-                        <Events />
-                    </Suspense>
-                </div>
+            </div>
+            <div className="w-full flex flex-col -mt-10 items-center lg:flex-row lg:items-start md:mt-20 lg:mt-32">
+                <Suspense fallback={<div>Loading Filters...</div>}>
+                    <SearchParamsHandler />
+                </Suspense>
+                <Suspense fallback={<div>Loading Events...</div>}>
+                    <Events />
+                </Suspense>
+                <div className='lg:w-80' />
             </div>
         </div>
     );

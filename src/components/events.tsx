@@ -83,15 +83,12 @@ const Events: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col -ml-24 items-center">
+        <div className="flex flex-col items-center">
             {events.length > 0 ? (
-                <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 gap-y-10 md:gap-y-20 mt-10 sm:mt-20 mb-10 mx-4 md:mx-10 lg:mx-20">
-                        {events.map((event) => (
-                            <Event key={event._id} data={event} />
-                        ))}
-                    </div>
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-2">
+                    {events.map((event) => (
+                        <Event key={event._id} data={event} />
+                    ))}
                     {currentPage < totalPages && (
                         <div className="flex justify-center">
                             <button
@@ -102,7 +99,7 @@ const Events: React.FC = () => {
                             </button>
                         </div>
                     )}
-                </>
+                </div>
             ) : (
                 <div className="flex items-center justify-center h-96">
                     <p className="font-bold text-center">No events found.</p>
