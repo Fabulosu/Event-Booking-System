@@ -71,7 +71,7 @@ export default function EventsPage() {
                 className="w-full object-cover h-[250px] md:h-[446px] -z-10 pt-20"
             />
             <div className='flex flex-col w-full lg:ml-64 -mt-36 md:-mt-64 justify-center'>
-                <h1 className='text-white text-center lg:text-left lg:pl-2 w-[500px] lg:text-4xl text-xl font-bold'>
+                <h1 className='text-white text-center lg:text-left lg:pl-2 lg:w-[500px] lg:text-4xl text-xl font-bold'>
                     Discover events for all the things you love!
                 </h1>
                 <div className='flex flex-row items-center mt-6 px-2'>
