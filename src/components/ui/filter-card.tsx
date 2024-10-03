@@ -24,7 +24,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
     };
 
     return (
-        <div className="flex flex-col h-64 mt-24 lg:mt-0 px-2 lg:w-80 w-full shadow-lg rounded-lg">
+        <div className="flex flex-col h-64 mt-24 gap-1 lg:mt-0 px-2 lg:w-80 w-full shadow-lg rounded-lg">
             <h2 className="font-bold text-lg mb-4 text-center">Filter Events</h2>
             <div>
                 <Label>Pick a category</Label>
