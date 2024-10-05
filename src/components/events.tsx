@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Event from "./ui/event";
+import { Button } from "./ui/button";
 
 interface Event {
     _id: string;
@@ -85,24 +86,28 @@ const Events: React.FC = () => {
     return (
         <div className="flex flex-col items-center">
             {events.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-2">
-                    {events.map((event) => (
-                        <Event key={event._id} data={event} />
-                    ))}
+                <div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-2">
+                        {events.map((event) => (
+                            <Event key={event._id} data={event} />
+                        ))}
+                    </div>
                     {currentPage < totalPages && (
-                        <div className="flex justify-center">
-                            <button
-                                className="my-10 px-4 py-2 bg-[#329c75] text-white rounded"
+                        <div className="w-full flex justify-center">
+                            <Button
+                                className="my-10 px-4 py-2 bg-[#24AE7C] hover:bg-[#329c75] text-white rounded"
                                 onClick={loadMoreEvents}
                             >
                                 Load More
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>
             ) : (
-                <div className="flex items-center justify-center h-96">
-                    <p className="font-bold text-center">No events found.</p>
+                <div className="flex items-center justify-center min-h-[40vh]">
+                    <div className="w-[300px] sm:w-[400px] md:w-[500px] lg:w-[68vw] text-center">
+                        <p className="font-bold">No events found!</p>
+                    </div>
                 </div>
             )}
         </div>

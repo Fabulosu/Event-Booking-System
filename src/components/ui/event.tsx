@@ -31,7 +31,7 @@ const Event: React.FC<Props> = ({ data }) => {
                     className="w-full h-[150px] sm:h-[180px] md:h-[200px] lg:h-[250px] object-cover"
                 />
                 <DateCircle date={data.date} />
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mt-1 text-wrap h-16">{data.title}</h3>
+                <h3 className="text-xl sm:text-2xl xl:text-3xl font-semibold mt-1 text-wrap h-16">{data.title}</h3>
             </div>
             <div className="flex flex-col">
                 <p className="font-bold text-sm sm:text-base md:text-lg pt-5">{data.price === 0 ? "FREE" : `$${data.price}`}</p>
