@@ -19,6 +19,49 @@ interface DatePickerWithRangeProps {
     onChange?: (date: DateRange | undefined) => void;
 }
 
+interface DatePickerDemoProps {
+    className?: string;
+    onChange?: (date: Date | undefined) => void;
+}
+
+export function DatePickerDemo({ className, onChange }: DatePickerDemoProps) {
+    const [date, setDate] = React.useState<Date | undefined>(undefined);
+
+    const handleDateChange = (selectedDate: Date | undefined) => {
+        setDate(selectedDate);
+        if (onChange) {
+            onChange(selectedDate); // Call the onChange prop with the new date
+        }
+    };
+
+    return (
+        <div className={className}>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant={"outline"}
+                        className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                        )}
+                    >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                    <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={handleDateChange} // Call handleDateChange when a date is selected
+                        initialFocus
+                    />
+                </PopoverContent>
+            </Popover>
+        </div>
+    );
+}
+
 export function DatePickerWithRange({
     className,
     onChange,

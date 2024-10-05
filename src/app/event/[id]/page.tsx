@@ -105,7 +105,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                 height="300"
                                 loading="lazy"
                                 allowFullScreen
-                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=Grand Hotel Bucharest,Romania`}
+                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=${event.location}`}
                                 className="mt-4 mb-24 border-0"
                                 style={{ border: 0 }}
                             />

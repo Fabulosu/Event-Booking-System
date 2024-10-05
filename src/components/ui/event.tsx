@@ -41,7 +41,7 @@ const Event: React.FC<Props> = ({ data }) => {
                     </p>
                 )}
                 <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
-                    <IoLocationOutline /> {data.location.split(',')[0]}
+                    <IoLocationOutline /> {data.location.split(',')[1]}
                 </p>
                 <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
                     <FaRegClock />

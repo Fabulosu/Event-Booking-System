@@ -93,7 +93,7 @@ const Events: React.FC = () => {
                         ))}
                     </div>
                     {currentPage < totalPages && (
-                        <div className="w-full flex justify-center">
+                        <div className="flex justify-center">
                             <Button
                                 className="my-10 px-4 py-2 bg-[#24AE7C] hover:bg-[#329c75] text-white rounded"
                                 onClick={loadMoreEvents}
