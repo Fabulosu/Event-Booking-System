@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     try {
         const { numberOfEvents } = await req.json();
         for (let i = 0; i < numberOfEvents; i++) {
-            let randAddress = faker.helpers.arrayElement([
+            const randAddress = faker.helpers.arrayElement([
                 "123 Main St, Springfield",
                 "456 Oak Ave, Metropolis",
                 "789 Elm St, Gotham",

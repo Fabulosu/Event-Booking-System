@@ -3,7 +3,13 @@ import path from "path";
 import { writeFile } from "fs/promises";
 import { dbConnect } from "@/utils/database";
 import { EventModel } from "@/utils/models";
-import axios from "axios"
+import axios from "axios";
+
+interface AddressComponent {
+    long_name: string;
+    short_name: string;
+    types: string[];
+}
 
 const getGeocodedAddress = async (lat: number, lng: number): Promise<string> => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API;
@@ -29,12 +35,10 @@ const getGeocodedCity = async (lat: number, lng: number): Promise<string> => {
     try {
         const response = await axios.get(geocodingUrl);
         if (response.data.results.length > 0) {
-            const addressComponents = response.data.results[0].address_components;
-
-            console.log(addressComponents)
+            const addressComponents: AddressComponent[] = response.data.results[0].address_components;
 
             // Find the component that represents the city (type "locality")
-            const cityComponent = addressComponents.find((component: any) =>
+            const cityComponent = addressComponents.find((component) =>
                 component.types.includes("locality")
             );
 
