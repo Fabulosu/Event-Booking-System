@@ -13,12 +13,14 @@ const eventSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true }, // e.g., Music, Sports, Tech
-    location: { type: String, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
     date: { type: Date, required: true },
     availableSeats: { type: Number, required: true },
     bookedSeats: { type: Number, default: 0 },
     price: { type: Number, default: 0 }, // Optional, for paid events
     organizer: { type: Schema.Types.ObjectId, ref: 'User' },
+    imageUrl: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 });
 

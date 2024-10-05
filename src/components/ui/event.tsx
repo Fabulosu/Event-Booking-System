@@ -10,9 +10,10 @@ interface EventData {
     date: string | Date;
     title: string;
     price: number;
-    location: string;
+    city: string;
     availableSeats: number;
     bookedSeats: number;
+    imageUrl: string;
 }
 
 interface Props {
@@ -24,7 +25,7 @@ const Event: React.FC<Props> = ({ data }) => {
         <Link href={`/event/${data._id}`} className="h-[300px] sm:h-[350px] md:h-[439px] w-auto flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
             <div className="relative">
                 <Image
-                    src="/images/mockhead.png"
+                    src={data.imageUrl && `/uploads/` + data.imageUrl || "/images/mockhead.png"}
                     alt="Mockup event image"
                     width={400}
                     height={250}
@@ -41,7 +42,7 @@ const Event: React.FC<Props> = ({ data }) => {
                     </p>
                 )}
                 <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
-                    <IoLocationOutline /> {data.location.split(',')[1]}
+                    <IoLocationOutline /> {data.city}
                 </p>
                 <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
                     <FaRegClock />

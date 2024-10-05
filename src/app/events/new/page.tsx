@@ -1,23 +1,30 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Button } from "@/components/ui/button";
 import { DatePickerDemo } from "@/components/ui/date-picker";
 import Navbar from "@/components/navbar";
 import { useRouter } from "next/navigation";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 export default function CreateEventPage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(0);
+    const [category, setCategory] = useState("");
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [center, setCenter] = useState<{ lat: number; lng: number }>({
-        lat: 0,
-        lng: 0,
+        lat: 51.505,
+        lng: -0.09,
     });
-    // const [date, setDate] = useState("");
+    const [date, setDate] = useState("");
     const [image, setImage] = useState<File | null>(null);
 
     useEffect(() => {
@@ -54,27 +61,30 @@ export default function CreateEventPage() {
         formData.append("title", title);
         formData.append("description", description);
         formData.append("price", price.toString());
-        // formData.append("date", date);
+        formData.append("date", date);
+        formData.append("category", category);
         if (image) {
-            formData.append("image", image);
+            formData.append("file", image);
+        }
+        if (location) {
+            formData.append("location", JSON.stringify(location));
         }
 
         try {
-            const response = await axios.post("/api/events", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+            const response = await fetch("/api/events/create", {
+                method: "POST",
+                body: formData,
             });
+            const data = await response.json();
+
             if (response.status === 201) {
                 router.push("/events");
+            } else {
+                console.error("Failed to create event:", data.error);
             }
         } catch (error) {
             console.error("Failed to create event:", error);
         }
-    };
-
-    const handleDateChange = (newDate: Date | undefined) => {
-        console.log("Selected Date:", newDate);
     };
 
     return (
@@ -98,6 +108,21 @@ export default function CreateEventPage() {
                     </div>
 
                     <div>
+                        <label className="block font-bold mb-2" htmlFor="title">Event Category</label>
+                        <Select onValueChange={(val) => setCategory(val)}>
+                            <SelectTrigger className="w-full shadow-xl">
+                                <SelectValue placeholder="Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="music">Music</SelectItem>
+                                <SelectItem value="sports">Sports</SelectItem>
+                                <SelectItem value="tech">Tech</SelectItem>
+                                <SelectItem value="arts">Arts</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div>
                         <label className="block font-bold mb-2" htmlFor="description">Description</label>
                         <textarea
                             id="description"
@@ -105,7 +130,7 @@ export default function CreateEventPage() {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             className="w-full border px-3 py-2 rounded shadow-xl"
-                            rows={5}
+                            rows={1}
                             maxLength={250}
                             required
                         />
@@ -147,8 +172,8 @@ export default function CreateEventPage() {
                     <div>
                         <label className="block font-bold mb-2" htmlFor="date">Date</label>
                         <DatePickerDemo
-                            onChange={handleDateChange}
                             className="w-full shadow-xl"
+                            onChange={(val) => { val && setDate(val.toString()) }}
                         />
                     </div>
 

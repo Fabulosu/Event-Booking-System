@@ -6,11 +6,13 @@ import { Button } from "./ui/button";
 interface Event {
     _id: string;
     title: string;
-    location: string;
+    address: string;
+    city: string;
     date: string;
     price: number;
     availableSeats: number;
     bookedSeats: number;
+    imageUrl: string;
 }
 
 const Events: React.FC = () => {

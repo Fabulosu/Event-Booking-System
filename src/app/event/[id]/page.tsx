@@ -10,13 +10,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface Event {
     _id: string;
     title: string;
-    location: string;
+    address: string;
     date: string;
     price: number;
     description: string;
     organizer: {
         username: string;
     };
+    imageUrl: string;
 }
 
 export default function EventPage({ params }: { params: { id: string } }) {
@@ -57,7 +58,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
             {event ? (
                 <div className="flex flex-col px-4 md:px-12">
                     <div className="relative w-full h-[300px] md:h-[500px]">
-                        <Image src="/images/mock.png" fill={true} alt="Mock event image" className="object-cover" />
+                        <Image src={event.imageUrl && `/uploads/` + event.imageUrl || "/images/mockhead.png"} fill={true} alt="Mock event image" className="object-cover" />
                     </div>
                     <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-6">
                         <div className="w-full lg:w-1/2 flex flex-col gap-5">
@@ -78,7 +79,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                             <div className="flex flex-col gap-2">
                                 <p className="flex flex-row gap-1 items-center">
                                     <IoLocationOutline className="text-[#24AE7C]" />
-                                    {event.location}
+                                    {event.address}
                                 </p>
                                 <p className="flex items-center gap-2">
                                     <FaRegCalendar className="text-[#24AE7C]" />
@@ -105,7 +106,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                 height="300"
                                 loading="lazy"
                                 allowFullScreen
-                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=${event.location}`}
+                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=${event.address}`}
                                 className="mt-4 mb-24 border-0"
                                 style={{ border: 0 }}
                             />
