@@ -30,7 +30,7 @@ export const authConfig: NextAuthOptions = {
                     ]
                 })
                 if (user && bcrypt.compareSync(credentials.password, user.password)) {
-                    return { id: user._id, username: user.username, email: user.email, profilePicture: user.profilePicture }
+                    return { id: user._id, username: user.username, email: user.email, profilePicture: user.profilePicture, balance: user.balance }
                 }
 
                 return null;
@@ -52,6 +52,7 @@ export const authConfig: NextAuthOptions = {
                 token.username = user.username;
                 token.email = user.email;
                 token.profilePicture = user.profilePicture;
+                token.balance = user.balance;
             }
             return token;
         },
@@ -61,6 +62,7 @@ export const authConfig: NextAuthOptions = {
                 session.user.username = token.username;
                 session.user.email = token.email;
                 session.user.profilePicture = token.profilePicture;
+                session.user.balance = token.balance;
             }
             return session;
         }

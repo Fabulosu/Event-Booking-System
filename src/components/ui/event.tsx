@@ -25,7 +25,7 @@ const Event: React.FC<Props> = ({ data }) => {
         <Link href={`/event/${data._id}`} className="h-[300px] sm:h-[350px] md:h-[439px] w-auto flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
             <div className="relative">
                 <Image
-                    src={data.imageUrl && `/uploads/` + data.imageUrl || "/images/mockhead.png"}
+                    src={data.imageUrl && `/uploads/` + data.imageUrl || "/images/mockhead.jpg"}
                     alt="Mockup event image"
                     width={400}
                     height={250}

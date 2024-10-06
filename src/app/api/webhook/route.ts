@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { dbConnect } from '@/utils/database';
-import { PaymentModel, BookingModel, EventModel } from '@/utils/models';
+import { PaymentModel, BookingModel, EventModel, UserModel } from '@/utils/models';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
@@ -9,17 +9,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 export async function POST(req: NextRequest) {
-
     const headersList = headers();
-    const signature = headersList.get("stripe-signature");
+    const signature = headersList.get('stripe-signature');
 
     if (!signature || Array.isArray(signature)) {
-        console.error('Missing or invalid Stripe signature header')
+        console.error('Missing or invalid Stripe signature header');
         return NextResponse.json('Missing or invalid Stripe signature header', { status: 400 });
     }
 
     let event;
-
 
     try {
         const rawBody = await req.text();
@@ -64,7 +62,14 @@ export async function POST(req: NextRequest) {
                     session.metadata.eventId,
                     { $inc: { bookedSeats: session.metadata.quantity } },
                     { new: true }
-                )
+                );
+
+                await UserModel.findByIdAndUpdate(
+                    session.metadata.userId,
+                    { $inc: { balance: session.amount_total / 100 } },
+                    { new: true }
+                );
+
             } catch (error) {
                 console.error('Failed to save payment or booking:', error);
                 return NextResponse.json('Failed to save payment or booking', { status: 500 });

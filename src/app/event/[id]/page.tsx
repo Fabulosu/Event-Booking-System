@@ -58,7 +58,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
             {event ? (
                 <div className="flex flex-col px-4 md:px-12">
                     <div className="relative w-full h-[300px] md:h-[500px]">
-                        <Image src={event.imageUrl && `/uploads/` + event.imageUrl || "/images/mockhead.png"} fill={true} alt="Mock event image" className="object-cover" />
+                        <Image src={event.imageUrl && `/uploads/` + event.imageUrl || "/images/mockhead.jpg"} fill={true} alt="Mock event image" className="object-cover" />
                     </div>
                     <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-6">
                         <div className="w-full lg:w-1/2 flex flex-col gap-5">

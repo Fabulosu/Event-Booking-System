@@ -4,6 +4,7 @@ const userSchema = new Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    balance: { type: Number, required: true, default: 0 },
     role: { type: String, enum: ['user', 'organizer', 'admin'], default: 'user' },
     profilePicture: { type: String },
     createdAt: { type: Date, default: Date.now },
