@@ -17,6 +17,13 @@ import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { cn } from '@/lib/utils';
 
 interface Props {
     price?: number;
@@ -38,7 +45,7 @@ interface Event {
 }
 
 const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [event, setEvent] = useState<Event | null>(null);
     const [ticketsToBuy, setTicketsToBuy] = useState(0);
 
@@ -98,9 +105,21 @@ const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
         <div className='flex fixed z-50 bottom-0 px-12 justify-between items-center w-screen h-[80px] bg-white shadow-inner shadow-neutral-400'>
             <p className="font-bold text-2xl">{price === 0 ? "FREE" : `$${price}`}</p>
             <Dialog>
-                <DialogTrigger asChild>
-                    <Button className='bg-[#24AE7C] hover:bg-[#329c75] text-white scale-110'>Purchase Ticket</Button>
-                </DialogTrigger>
+
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <DialogTrigger asChild>
+                                <Button className='bg-[#24AE7C] hover:bg-[#329c75] text-white scale-110' disabled={status !== "authenticated"}>Purchase Ticket</Button>
+                            </DialogTrigger>
+
+                        </TooltipTrigger>
+
+                        <TooltipContent className={cn(status === "authenticated" ? "hidden" : "flex")}>
+                            <p>You need to be signed in to purchase a ticket!</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                 <DialogContent className="sm:max-w-[550px]">
                     <DialogHeader>
                         <DialogTitle className='font-bold text-2xl'>{event?.title}</DialogTitle>

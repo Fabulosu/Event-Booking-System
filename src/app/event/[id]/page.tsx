@@ -106,7 +106,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                 height="300"
                                 loading="lazy"
                                 allowFullScreen
-                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=${event.address}`}
+                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}&q=${event.address}&zoom=16`}
                                 className="mt-4 mb-24 border-0"
                                 style={{ border: 0 }}
                             />

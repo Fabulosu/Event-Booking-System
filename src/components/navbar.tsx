@@ -57,7 +57,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
                 ) : (
                     <Link
                         href="/login"
-                        className="text-white hover:text-[#329c75] hover:bg-transparent hover:cursor-pointer"
+                        className={cn(buttonVariants({ variant: "ghost" }), background ? "text-black hover:text-[#329c75]" : "text-white hover:text-[#329c75]", "hover:bg-transparent hover:cursor-pointer")}
                     >
                         Greetings! Sign in
                     </Link>

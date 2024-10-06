@@ -18,6 +18,8 @@ export default function CreateEventPage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(0);
+    const [seats, setSeats] = useState(10);
+    const [time, setTime] = useState("");
     const [category, setCategory] = useState("");
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [center, setCenter] = useState<{ lat: number; lng: number }>({
@@ -61,8 +63,10 @@ export default function CreateEventPage() {
         formData.append("title", title);
         formData.append("description", description);
         formData.append("price", price.toString());
+        formData.append("seats", seats.toString());
         formData.append("date", date);
         formData.append("category", category);
+        formData.append("time", time);
         if (image) {
             formData.append("file", image);
         }
@@ -141,9 +145,28 @@ export default function CreateEventPage() {
                         <Input
                             type="number"
                             id="price"
-                            value={price}
+                            defaultValue={price}
                             onChange={(e) => setPrice(Number(e.target.value))}
                             className="w-full border px-3 py-2 rounded shadow-xl"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-bold mb-2" htmlFor="seats">Available Seats</label>
+                        <Input
+                            type="number"
+                            id="seats"
+                            defaultValue={seats}
+                            onChange={(e) => setSeats(Number(e.target.value))}
+                            onBlur={(e) => {
+                                if (Number(e.target.value) < 10) {
+                                    e.target.value = "10";
+                                    setSeats(10);
+                                }
+                            }}
+                            className="w-full border px-3 py-2 rounded shadow-xl"
+                            min={1}
                             required
                         />
                     </div>
@@ -174,6 +197,18 @@ export default function CreateEventPage() {
                         <DatePickerDemo
                             className="w-full shadow-xl"
                             onChange={(val) => { val && setDate(val.toString()) }}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-bold mb-2" htmlFor="time">Starting time</label>
+                        <Input
+                            type="time"
+                            id="time"
+                            defaultValue={time}
+                            onChange={(e) => setTime(e.target.value)}
+                            className="w-full flex justify-between border px-3 py-2 rounded shadow-xl"
+                            required
                         />
                     </div>
 
