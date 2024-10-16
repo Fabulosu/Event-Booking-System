@@ -33,7 +33,7 @@ interface Props {
 interface Event {
     _id: string;
     title: string;
-    location: string;
+    address: string;
     date: string;
     price: number;
     description: string;
@@ -126,7 +126,7 @@ const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
                         <DialogDescription className='flex flex-col gap-2'>
                             <div className='flex flex-row gap-2 items-center'>
                                 <IoLocationOutline className="text-[#24AE7C]" />
-                                {event?.location}
+                                {event?.address}
                             </div>
                             <div className='flex flex-row gap-2 items-center'>
                                 <FaRegCalendar className="text-[#24AE7C]" />
