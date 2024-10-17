@@ -2,7 +2,7 @@ import { dbConnect } from "@/utils/database";
 import { EventModel } from "@/utils/models";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const userId = url.searchParams.get("userId");
 
