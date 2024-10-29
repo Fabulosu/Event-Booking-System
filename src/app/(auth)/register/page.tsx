@@ -79,8 +79,12 @@ export default function RegisterPage() {
 
                     <div className="flex flex-col gap-5">
                         <div className="flex flex-col gap-1">
-                            <p className="text-[#9B9C9E]">Email or username</p>
-                            <Input type="text" name="username" placeholder="admin@fabulosu.xyz" className="text-black" ref={usernameRef} required={true} />
+                            <p className="text-[#9B9C9E]">Username</p>
+                            <Input type="text" name="username" placeholder="Fabulosu" className="text-black" ref={usernameRef} required={true} />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <p className="text-[#9B9C9E]">Email</p>
+                            <Input type="email" name="email" placeholder="admin@fabulosu.xyz" className="text-black" ref={emailRef} required={true} />
                         </div>
                         <div className="flex flex-col gap-1">
                             <p className="text-[#9B9C9E]">Password</p>

@@ -64,8 +64,10 @@ export async function POST(req: NextRequest) {
                     { new: true }
                 );
 
+                const event = await EventModel.findById(session.metadata.eventId);
+
                 await UserModel.findByIdAndUpdate(
-                    session.metadata.userId,
+                    event.organizer,
                     { $inc: { balance: session.amount_total / 100 } },
                     { new: true }
                 );

@@ -51,7 +51,7 @@ const EventCard: React.FC<Props> = ({ data }) => {
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-                <Link href="#" className={cn(buttonVariants({ size: "lg" }), "bg-[#24AE7C] hover:bg-[#329c75] font-bold")}>Edit</Link>
+                <Link href={`/events/edit/${data._id}`} className={cn(buttonVariants({ size: "lg" }), "bg-[#24AE7C] hover:bg-[#329c75] font-bold")}>Edit</Link>
             </div>
         </div>
     )

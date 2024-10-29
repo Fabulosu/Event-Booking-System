@@ -22,10 +22,11 @@ interface DatePickerWithRangeProps {
 interface DatePickerDemoProps {
     className?: string;
     onChange?: (date: Date | undefined) => void;
+    defaultValue?: Date;
 }
 
-export function DatePickerDemo({ className, onChange }: DatePickerDemoProps) {
-    const [date, setDate] = React.useState<Date | undefined>(undefined);
+export function DatePickerDemo({ className, onChange, defaultValue }: DatePickerDemoProps) {
+    const [date, setDate] = React.useState<Date | undefined>(defaultValue);
 
     const handleDateChange = (selectedDate: Date | undefined) => {
         setDate(selectedDate);

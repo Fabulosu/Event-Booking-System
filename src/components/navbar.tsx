@@ -1,6 +1,6 @@
 "use client";
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, buttonVariants } from './ui/button';
 import { FaCalendarMinus, FaBars } from "react-icons/fa6";
 import Link from 'next/link';
@@ -17,6 +17,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import axios from 'axios';
 
 interface Props {
     background?: boolean;
@@ -25,6 +26,20 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ background = true, className }) => {
     const { data: session, status } = useSession();
+    const [userBalance, setUserBalance] = useState(0);
+
+    useEffect(() => {
+        const fetchUserBalance = async () => {
+            try {
+                const response = await axios.get("/api/user/balance");
+                if (response) setUserBalance(response.data.balance);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        if (session) fetchUserBalance();
+    }, [session])
 
     const handleSignOut = async () => {
         await signOut();
@@ -71,7 +86,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
                         <DropdownMenuContent>
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Balance: ${session.user.balance}</DropdownMenuLabel>
+                            <DropdownMenuLabel>Balance: ${userBalance || session.user.balance}</DropdownMenuLabel>
                             <Link href="/profile"><DropdownMenuItem className='hover:cursor-pointer'> Profile</DropdownMenuItem></Link>
                             <Link href="/events"><DropdownMenuItem className='hover:cursor-pointer'>My Events</DropdownMenuItem></Link>
                             <Link href="" onClick={handleSignOut}><DropdownMenuItem className='text-red-600 hover:text-red-700 hover:cursor-pointer'>Sign out</DropdownMenuItem></Link>
