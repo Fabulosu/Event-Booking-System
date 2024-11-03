@@ -110,7 +110,7 @@ const BottomBar: React.FC<Props> = ({ price = 0, eventId }) => {
                     <Tooltip>
                         <TooltipTrigger>
                             <DialogTrigger asChild>
-                                <Button className='bg-[#24AE7C] hover:bg-[#329c75] text-white scale-110' disabled={status !== "authenticated"}>Purchase Ticket</Button>
+                                <Button className='bg-[#24AE7C] hover:bg-[#329c75] text-white scale-110' disabled={status !== "authenticated"}>{price === 0 ? "Get Ticket" : "Purchase Ticket"}</Button>
                             </DialogTrigger>
 
                         </TooltipTrigger>
