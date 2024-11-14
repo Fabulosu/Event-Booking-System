@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsFillPeopleFill } from "react-icons/bs";
 import {
     Tooltip,
@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/tooltip";
 import { IoTicket } from 'react-icons/io5';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from './button';
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 interface EventData {
     _id: string;
@@ -24,37 +24,137 @@ interface EventData {
 }
 
 interface Props {
-    data: EventData
+    data: EventData;
 }
 
 const EventCard: React.FC<Props> = ({ data }) => {
+    const [bookingsData, setBookingsData] = useState<number[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (data._id) {
+            const fetchBookingsData = async () => {
+                try {
+                    const response = await fetch(`/api/bookings/${data._id}`);
+                    const result = await response.json();
+                    if (result.success && Array.isArray(result.bookings)) {
+                        const today = new Date();
+                        const last10Days = Array.from({ length: 10 }, (_, i) => {
+                            const date = new Date(today);
+                            date.setDate(today.getDate() - i);
+                            return date.toISOString().split('T')[0];
+                        }).reverse();
+
+                        const counts = last10Days.map(day => (
+                            result.bookings.filter((booking: { bookingDate: string }) =>
+                                new Date(booking.bookingDate).toISOString().split('T')[0] === day
+                            ).length
+                        ));
+                        setBookingsData(counts);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch bookings data:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchBookingsData();
+        }
+    }, [data._id]);
+
+    const chartData = {
+        labels: Array.from({ length: 10 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (9 - i));
+            return date.toLocaleDateString();
+        }),
+        datasets: [
+            {
+                label: 'Bookings per day',
+                data: bookingsData,
+                borderColor: '#24AE7C',
+                backgroundColor: 'rgba(36, 174, 124, 0.2)',
+                fill: true,
+            },
+        ],
+    };
+
     return (
-        <div className='flex items-center md:gap-6 w-full lg:w-[50vw] shadow-xl h-[80px] md:h-[100px] rounded-lg'>
-            <Image src={data.imageUrl && `/uploads/` + data.imageUrl || "/images/mockhead.jpg"} alt='Image' width={300} height={250} className='w-[100px] md:w-[300px] h-full rounded-l-lg' />
-            <div className='w-full flex gap-5 md:gap-2 justify-between items-center p-2 md:p-5'>
-                <h1 className='font-semibold text-md sm:text-lg md:text-2xl w-[20vw] text-nowrap overflow-hidden'>{data.title}</h1>
-                <div className='flex flex-col'>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger className='hover:cursor-default'><p className='flex items-center gap-2 text-sm text-gray-600'><BsFillPeopleFill />{data.bookedSeats}</p></TooltipTrigger>
-                            <TooltipContent>
-                                <p>{data.bookedSeats} attendees!</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger className='hover:cursor-default'><p className='flex items-center gap-2 text-sm text-gray-600'><IoTicket />{data.availableSeats}</p></TooltipTrigger>
-                            <TooltipContent>
-                                <p>{data.availableSeats} tickets left!</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+        <div className="min-w-3/4 w-3/4 flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl">
+            <Image
+                src={data.imageUrl ? `/uploads/${data.imageUrl}` : "/images/mockhead.jpg"}
+                alt="Event Image"
+                width={400}
+                height={300}
+                className="w-full lg:w-1/3 h-48 lg:h-auto object-cover"
+            />
+
+            <div className="flex flex-col justify-between p-4 lg:w-2/3">
+                <div>
+                    <h2 className="text-xl lg:text-2xl font-bold mb-2">{data.title}</h2>
+                    <p className="text-gray-600 text-sm lg:text-base mb-4">
+                        {data.city}, {new Date(data.date).toLocaleDateString()}
+                    </p>
+
+                    {loading && (
+                        <p>Graph is loading...</p>
+                    )}
+
+                    {!loading && bookingsData.length > 0 && (
+                        <div className="w-full h-32 mb-4">
+                            <Line
+                                data={chartData}
+                                options={{
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: { display: false },
+                                    },
+                                    scales: {
+                                        y: { beginAtZero: true, grid: { display: false } },
+                                        x: { grid: { display: false } },
+                                    },
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
-                <Link href={`/events/edit/${data._id}`} className={cn(buttonVariants({ size: "lg" }), "bg-[#24AE7C] hover:bg-[#329c75] font-bold")}>Edit</Link>
+
+                <div className="flex justify-between items-center mt-4">
+                    <div className="flex items-center gap-3 text-gray-700">
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger className="flex items-center gap-2">
+                                    <BsFillPeopleFill />
+                                    <span>{data.bookedSeats}</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{data.bookedSeats} attendees</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger className="flex items-center gap-2">
+                                    <IoTicket />
+                                    <span>{data.availableSeats - data.bookedSeats}</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{data.availableSeats - data.bookedSeats} tickets left</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+                    <Link
+                        href={`/events/edit/${data._id}`}
+                        className="px-4 py-2 bg-[#24AE7C] hover:bg-[#329c75] text-white font-semibold rounded-lg transition"
+                    >
+                        Edit
+                    </Link>
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default EventCard;
