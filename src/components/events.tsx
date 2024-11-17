@@ -51,6 +51,8 @@ const NoEvents = () => (
         <Image
             src="/images/no-events.svg"
             alt="No events found"
+            width={256}
+            height={256}
             className="w-48 h-48 mb-4 opacity-50"
         />
         <h3 className="text-xl font-semibold text-gray-700 mb-2">

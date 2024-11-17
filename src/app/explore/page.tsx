@@ -1,4 +1,5 @@
 "use client";
+
 import { Suspense } from 'react';
 import Navbar from "@/components/navbar";
 import { Input } from "@/components/ui/input";
@@ -108,46 +109,48 @@ export default function EventsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Navbar className="fixed top-0 w-full z-50" />
+        <Suspense fallback={<LoadingSkeleton />}>
+            <div className="min-h-screen bg-gray-50">
+                <Navbar className="fixed top-0 w-full z-50" />
 
-            <div className="relative h-[400px] md:h-[500px]">
-                <Image
-                    src="/images/explorebg.png"
-                    fill
-                    priority
-                    alt="Explore Events"
-                    className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50" />
+                <div className="relative h-[400px] md:h-[500px]">
+                    <Image
+                        src="/images/explorebg.png"
+                        fill
+                        priority
+                        alt="Explore Events"
+                        className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/50" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-                    <motion.h1
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-white text-3xl md:text-5xl font-bold text-center mb-8"
-                    >
-                        Discover events for all the things you love!
-                    </motion.h1>
-                    <SearchBar onSearch={handleSearch} />
-                </div>
-            </div>
-
-            <div className="max-w-7xl sm:mx-10 mx-auto lg:mx-40 px-4 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <div className="lg:col-span-3">
-                        <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-lg" />}>
-                            <Filter onFilterChange={handleFilterChange} />
-                        </Suspense>
-                    </div>
-
-                    <div className="lg:col-span-9">
-                        <Suspense fallback={<LoadingSkeleton />}>
-                            <Events />
-                        </Suspense>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+                        <motion.h1
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-white text-3xl md:text-5xl font-bold text-center mb-8"
+                        >
+                            Discover events for all the things you love!
+                        </motion.h1>
+                        <SearchBar onSearch={handleSearch} />
                     </div>
                 </div>
+
+                <div className="max-w-7xl sm:mx-10 mx-auto lg:mx-40 px-4 py-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div className="lg:col-span-3">
+                            <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-lg" />}>
+                                <Filter onFilterChange={handleFilterChange} />
+                            </Suspense>
+                        </div>
+
+                        <div className="lg:col-span-9">
+                            <Suspense fallback={<LoadingSkeleton />}>
+                                <Events />
+                            </Suspense>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </Suspense>
     );
 }
