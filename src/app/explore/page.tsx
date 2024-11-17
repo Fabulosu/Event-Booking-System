@@ -77,18 +77,9 @@ const LoadingSkeleton = () => (
     </div>
 );
 
-export default function EventsPage() {
+const SearchParamsHandler = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-
-    const handleSearch = (location: string, event: string) => {
-        const query: Record<string, string> = {};
-        if (location) query.location = location;
-        if (event) query.event = event;
-
-        const queryString = new URLSearchParams(query).toString();
-        router.push(`/explore${queryString ? `?${queryString}` : ''}`);
-    };
 
     const handleFilterChange = (filters: { category?: string; date?: DateRange }) => {
         const currentQuery = new URLSearchParams(searchParams.toString());
@@ -106,6 +97,26 @@ export default function EventsPage() {
         }
 
         router.push(`/explore?${currentQuery.toString()}`);
+    };
+
+    return <div className="lg:col-span-3">
+        <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-lg" />}>
+            <Filter onFilterChange={handleFilterChange} />
+        </Suspense>
+    </div>;
+}
+
+export default function EventsPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const handleSearch = (location: string, event: string) => {
+        const query: Record<string, string> = {};
+        if (location) query.location = location;
+        if (event) query.event = event;
+
+        const queryString = new URLSearchParams(query).toString();
+        router.push(`/explore${queryString ? `?${queryString}` : ''}`);
     };
 
     return (
@@ -137,11 +148,10 @@ export default function EventsPage() {
 
                 <div className="max-w-7xl sm:mx-10 mx-auto lg:mx-40 px-4 py-8">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div className="lg:col-span-3">
-                            <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-lg" />}>
-                                <Filter onFilterChange={handleFilterChange} />
-                            </Suspense>
-                        </div>
+
+                        <Suspense fallback={<LoadingSkeleton />}>
+                            <SearchParamsHandler />
+                        </Suspense>
 
                         <div className="lg:col-span-9">
                             <Suspense fallback={<LoadingSkeleton />}>
