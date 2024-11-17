@@ -197,7 +197,7 @@ export default function HomePage() {
           <div className="container mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-8 max-w-6xl mx-auto">
               <div className="space-y-4">
-                <h3 className="text-white text-lg font-bold">EventBooking</h3>
+                <h3 className="text-white text-lg font-bold">SwitftSeats</h3>
                 <p className="text-sm text-gray-400">
                   Making event management simple and efficient.
                 </p>
@@ -250,7 +250,7 @@ export default function HomePage() {
             </div>
 
             <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-              <p className="text-sm">© 2024 EventBooking. All rights reserved.</p>
+              <p className="text-sm">© 2024 SwitftSeats. All rights reserved.</p>
             </div>
           </div>
         </footer>
