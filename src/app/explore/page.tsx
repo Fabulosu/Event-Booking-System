@@ -7,14 +7,87 @@ import { IoLocationOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRef } from "react";
+import { useState } from "react";
 import Events from "@/components/events";
 import Filter from '@/components/ui/filter-card';
 import { DateRange } from 'react-day-picker';
+import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
+import debounce from 'debounce';
 
-function SearchParamsHandler() {
+const SearchBar = ({ onSearch }: { onSearch: (location: string, event: string) => void }) => {
+    const [location, setLocation] = useState('');
+    const [eventName, setEventName] = useState('');
+
+    const debouncedSearch = debounce((loc: string, evt: string) => {
+        onSearch(loc, evt);
+    }, 500);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-row items-center gap-2 w-full max-w-2xl"
+        >
+            <div className="relative flex-1">
+                <IoLocationOutline className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                    className="w-full pl-10 rounded-lg border-gray-300"
+                    placeholder="Enter Location"
+                    value={location}
+                    onChange={(e) => {
+                        setLocation(e.target.value);
+                        debouncedSearch(e.target.value, eventName);
+                    }}
+                />
+            </div>
+            <div className="relative flex-1">
+                <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                    className="w-full pl-10 rounded-lg border-gray-300"
+                    placeholder="Search Event"
+                    value={eventName}
+                    onChange={(e) => {
+                        setEventName(e.target.value);
+                        debouncedSearch(location, e.target.value);
+                    }}
+                />
+            </div>
+            <Button
+                className="bg-[#24AE7C] hover:bg-[#329c75] px-6"
+                onClick={() => onSearch(location, eventName)}
+            >
+                Search
+            </Button>
+        </motion.div>
+    );
+};
+
+const LoadingSkeleton = () => (
+    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
+        {[...Array(6)].map((_, i) => (
+            <div key={i} className="space-y-4">
+                <Skeleton className="h-[200px] w-full rounded-lg" />
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-2/3" />
+            </div>
+        ))}
+    </div>
+);
+
+export default function EventsPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    const handleSearch = (location: string, event: string) => {
+        const query: Record<string, string> = {};
+        if (location) query.location = location;
+        if (event) query.event = event;
+
+        const queryString = new URLSearchParams(query).toString();
+        router.push(`/explore${queryString ? `?${queryString}` : ''}`);
+    };
 
     const handleFilterChange = (filters: { category?: string; date?: DateRange }) => {
         const currentQuery = new URLSearchParams(searchParams.toString());
@@ -34,83 +107,46 @@ function SearchParamsHandler() {
         router.push(`/explore?${currentQuery.toString()}`);
     };
 
-    return <Filter onFilterChange={handleFilterChange} />;
-}
-
-export default function EventsPage() {
-    const router = useRouter();
-    const locationRef = useRef<HTMLInputElement>(null);
-    const eventRef = useRef<HTMLInputElement>(null);
-
-    const handleFindEvents = () => {
-        const location = locationRef.current?.value;
-        const event = eventRef.current?.value;
-
-        const query: { location?: string; event?: string } = {};
-
-        if (location && location.length > 0) {
-            query.location = location;
-        }
-
-        if (event && event.length > 0) {
-            query.event = event;
-        }
-
-        const queryString = new URLSearchParams(query).toString();
-        router.push(`/explore${queryString ? `?${queryString}` : ''}`);
-    };
-
     return (
-        <div>
-            <Navbar className="absolute w-full z-50" />
-            <Image
-                src="/images/explorebg.png"
-                width={1920}
-                height={446}
-                alt="background"
-                className="w-full object-cover h-[250px] md:h-[446px] -z-10 pt-20"
-            />
-            <div className='flex flex-col w-full lg:ml-64 -mt-36 md:-mt-64 justify-center'>
-                <h1 className='text-white text-center lg:text-left lg:pl-2 lg:w-[500px] lg:text-4xl text-xl font-bold'>
-                    Discover events for all the things you love!
-                </h1>
-                <div className='flex flex-row items-center mt-6 px-2'>
-                    <div className='relative'>
-                        <IoLocationOutline className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
-                        <Input
-                            className="w-[120px] placeholder:text-xs md:w-auto rounded-none pl-10"
-                            name="location"
-                            type="text"
-                            placeholder="Enter Location"
-                            ref={locationRef}
-                        />
-                    </div>
-                    <div className="relative">
-                        <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
-                        <Input
-                            className="w-[120px] placeholder:text-xs md:w-auto rounded-none pl-10"
-                            name="event"
-                            type="text"
-                            placeholder="Search Event"
-                            ref={eventRef}
-                        />
-                    </div>
-                    <Button
-                        className="rounded-none text-xs w-[65px] md:w-[150px] bg-[#24AE7C] hover:bg-[#329c75]"
-                        onClick={handleFindEvents}
+        <div className="min-h-screen bg-gray-50">
+            <Navbar className="fixed top-0 w-full z-50" />
+
+            <div className="relative h-[400px] md:h-[500px]">
+                <Image
+                    src="/images/explorebg.png"
+                    fill
+                    priority
+                    alt="Explore Events"
+                    className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50" />
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+                    <motion.h1
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-white text-3xl md:text-5xl font-bold text-center mb-8"
                     >
-                        Search
-                    </Button>
+                        Discover events for all the things you love!
+                    </motion.h1>
+                    <SearchBar onSearch={handleSearch} />
                 </div>
             </div>
-            <div className="w-full flex flex-col -mt-10 items-center lg:flex-row lg:items-start gap-6 lg:gap-0 md:mt-20 lg:mt-32">
-                <Suspense fallback={<div>Loading Filters...</div>}>
-                    <SearchParamsHandler />
-                </Suspense>
-                <Suspense fallback={<div>Loading Events...</div>}>
-                    <Events />
-                </Suspense>
-                <div className='lg:w-80' />
+
+            <div className="max-w-7xl sm:mx-10 mx-auto lg:mx-40 px-4 py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="lg:col-span-3">
+                        <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-lg" />}>
+                            <Filter onFilterChange={handleFilterChange} />
+                        </Suspense>
+                    </div>
+
+                    <div className="lg:col-span-9">
+                        <Suspense fallback={<LoadingSkeleton />}>
+                            <Events />
+                        </Suspense>
+                    </div>
+                </div>
             </div>
         </div>
     );

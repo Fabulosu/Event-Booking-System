@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import React from 'react';
-import { FaRegClock } from 'react-icons/fa';
-import { IoLocationOutline, IoTicketOutline } from 'react-icons/io5';
+import { FaRegClock, FaTicketAlt } from 'react-icons/fa';
+import { IoLocationOutline } from 'react-icons/io5';
 import Link from 'next/link';
-import DateCircle from './date-circle';
+import { motion } from 'framer-motion';
+import { Badge } from './badge';
+import { formatDate, formatPrice } from '@/lib/utils';
 
 interface EventData {
     _id: string;
@@ -14,51 +16,77 @@ interface EventData {
     availableSeats: number;
     bookedSeats: number;
     imageUrl: string;
+    category?: string;
 }
 
 interface Props {
-    data: EventData
+    data: EventData;
 }
 
-const Event: React.FC<Props> = ({ data }) => {
+const EventCard: React.FC<Props> = ({ data }) => {
+    const remainingSeats = data.availableSeats - data.bookedSeats;
+    const isLowAvailability = remainingSeats < 10;
+
     return (
-        <Link href={`/event/${data._id}`} className="h-[300px] sm:h-[350px] md:h-[439px] w-auto flex flex-col justify-between hover:cursor-pointer transition-transform transform hover:scale-105 hover:z-10">
-            <div className="relative">
-                <Image
-                    src={data.imageUrl && `/uploads/` + data.imageUrl || "/images/mockhead.jpg"}
-                    alt="Mockup event image"
-                    width={400}
-                    height={250}
-                    className="w-full h-[150px] sm:h-[180px] md:h-[200px] lg:h-[250px] object-cover"
-                />
-                <DateCircle date={data.date} />
-                <h3 className="text-xl sm:text-2xl xl:text-3xl font-semibold mt-1 text-wrap h-16">{data.title}</h3>
-            </div>
-            <div className="flex flex-col">
-                <p className="font-bold text-sm sm:text-base md:text-lg pt-5">{data.price === 0 ? "FREE" : `$${data.price}`}</p>
-                {(data.availableSeats - data.bookedSeats) < 10 && (
-                    <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
-                        <IoTicketOutline /> {data.availableSeats - data.bookedSeats} Remaining
-                    </p>
-                )}
-                <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
-                    <IoLocationOutline /> {data.city}
-                </p>
-                <p className="text-gray-600 text-sm sm:text-base flex flex-row gap-1 items-center">
-                    <FaRegClock />
-                    {new Intl.DateTimeFormat("en-US", {
-                        weekday: "short",
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                        hour: "numeric",
-                        minute: "2-digit",
-                        hour12: true,
-                    }).format(new Date(data.date))}
-                </p>
-            </div>
+        <Link href={`/event/${data._id}`}>
+            <motion.div
+                whileHover={{ y: -5 }}
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+            >
+                <div className="relative aspect-video">
+                    <Image
+                        src={data.imageUrl ? `/uploads/${data.imageUrl}` : "/images/mockhead.jpg"}
+                        alt={data.title}
+                        fill
+                        className="object-cover"
+                    />
+                    {data.category && (
+                        <Badge
+                            variant="secondary"
+                            className="absolute top-4 left-4"
+                        >
+                            {data.category}
+                        </Badge>
+                    )}
+                    {isLowAvailability && (
+                        <Badge
+                            variant="destructive"
+                            className="absolute top-4 right-4"
+                        >
+                            {remainingSeats} seats left
+                        </Badge>
+                    )}
+                </div>
+
+                <div className="p-4 space-y-4">
+                    <h3 className="text-lg font-semibold line-clamp-2">
+                        {data.title}
+                    </h3>
+
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <FaRegClock className="flex-shrink-0" />
+                            <span className="text-sm">
+                                {formatDate(new Date(data.date))}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <IoLocationOutline className="flex-shrink-0" />
+                            <span className="text-sm">{data.city}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <FaTicketAlt className="text-[#24AE7C]" />
+                            <span className="font-bold">
+                                {formatPrice(data.price)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
         </Link>
     );
-}
+};
 
-export default Event;
+export default EventCard;
