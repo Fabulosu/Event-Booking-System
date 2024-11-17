@@ -108,7 +108,6 @@ const SearchParamsHandler = () => {
 
 export default function EventsPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
 
     const handleSearch = (location: string, event: string) => {
         const query: Record<string, string> = {};
