@@ -154,7 +154,7 @@ const Navbar: React.FC<Props> = ({ background = true, className }) => {
             </motion.button>
 
             <AnimatePresence>
-                {isMenuOpen && session && (
+                {isMenuOpen && (
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -258,7 +258,7 @@ const CreateEventButton = () => (
 );
 
 const MobileMenuContent = ({ session, status, handleSignOut, toggleMenu }: {
-    session: Session;
+    session: Session | null;
     status: string;
     handleSignOut: () => void;
     toggleMenu: () => void;
