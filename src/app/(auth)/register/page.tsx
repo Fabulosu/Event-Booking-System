@@ -93,8 +93,8 @@ export default function RegisterPage() {
 
             toast.success("Account created successfully!");
             router.push("/login");
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to create account");
+        } catch (error) {
+            toast.error("An error occurred");
         } finally {
             setIsLoading(false);
         }

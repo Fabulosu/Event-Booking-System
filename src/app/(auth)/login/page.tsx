@@ -92,7 +92,7 @@ export default function LoginPage(props: Props) {
 
                     <div className="mb-8">
                         <h1 className="text-4xl font-bold text-white mb-2">Welcome back!</h1>
-                        <p className="text-[#9B9C9E]">Let's get you back to your events.</p>
+                        <p className="text-[#9B9C9E]">Let&apos;s get you back to your events.</p>
                     </div>
 
                     <form onSubmit={onSubmit} className="space-y-6">
@@ -157,7 +157,7 @@ export default function LoginPage(props: Props) {
                         </Button>
 
                         <p className="text-center text-[#9B9C9E]">
-                            Don't have an account?{" "}
+                            Don&apos;t have an account?{" "}
                             <Link href="/register" className="text-emerald-500 hover:text-emerald-400">
                                 Sign up
                             </Link>
