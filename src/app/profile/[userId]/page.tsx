@@ -158,7 +158,7 @@ const ReviewCard = ({ review }: { review: Review }) => (
 );
 
 export default function UserProfilePage({ params }: { params: { userId: string } }) {
-  const { data: session, status, update } = useSession();
+  const { data: session, update } = useSession();
 
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isEditable, setIsEditable] = useState(false);

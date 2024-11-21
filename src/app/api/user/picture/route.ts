@@ -1,10 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import path from 'path';
 import fs from 'fs';
 import { authConfig } from '@/utils/auth';
 import { UserModel } from '@/utils/models';
-import { writeFile } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
@@ -15,7 +13,7 @@ export const config = {
     }
 };
 
-export async function POST(req: NextRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authConfig);
         if (!session) {
@@ -23,7 +21,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         }
 
         const { image } = await req.json();
-        // console.log(image)
         if (!image) {
             return NextResponse.json({ message: 'No image provided' }, { status: 400 });
         }
@@ -44,7 +41,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         const filename = `${session.user.id}-${Date.now()}${path.extname(matches[1])}.png`;
 
         // Save the file
-        const filePath = path.join(uploadsDir, filename);
         await fs.promises.writeFile(path.join(process.cwd(), "public/uploads/" + filename), new Int8Array(buffer));
 
         // Update database with new image path
