@@ -83,6 +83,8 @@ export default function EventPage({ params }: { params: { id: string } }) {
                 }
                 const eventData = await eventResponse.json();
 
+                console.log(eventData)
+
                 const ratingsResponse = await fetch(`/api/rating/${params.id}`);
                 if (!ratingsResponse.ok) {
                     const errorData = await ratingsResponse.json();
@@ -343,7 +345,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                             <CardContent className="p-4">
                                                 <div className="flex items-center gap-4">
                                                     <Avatar className="h-12 w-12">
-                                                        <AvatarImage src={event.organizer.profilePicture} />
+                                                        <AvatarImage src={`/uploads/${event.organizer.profilePicture}`} />
                                                         <AvatarFallback>
                                                             {event.organizer.username.slice(0, 2).toUpperCase()}
                                                         </AvatarFallback>

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import Navbar from "@/components/navbar";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, MapPin, Calendar, Edit, Users } from "lucide-react";
+import { Star, MapPin, Calendar, Edit, Users, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,7 +17,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export interface User {
   _id: string;
@@ -120,7 +121,7 @@ const ReviewCard = ({ review }: { review: Review }) => (
     <div className="flex items-start gap-4">
       <div className="relative w-10 h-10">
         <Image
-          src="/images/user1.jpg"
+          src={`uploads/${review.user.profilePicture}`}
           alt={review.user.username}
           fill
           className="rounded-full object-cover"
@@ -157,10 +158,14 @@ const ReviewCard = ({ review }: { review: Review }) => (
 );
 
 export default function UserProfilePage({ params }: { params: { userId: string } }) {
-  const { data: session } = useSession();
+  const { data: session, status, update } = useSession();
+
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isEditable, setIsEditable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [profileImage, setProfileImage] = useState("");
   useEffect(() => {
     if (params.userId) {
       const fetchProfileData = async () => {
@@ -168,7 +173,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
           setIsLoading(true);
           const response = await axios.get(`/api/user/${params.userId}`);
           setProfileData(response.data);
-          console.log(response.data);
+          setProfileImage(`/uploads/${response.data.user.profilePicture}`);
           if (session?.user.id === params.userId) {
             setIsEditable(true);
           }
@@ -215,6 +220,56 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     );
   }
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.includes('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (4MB limit)
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error('Image size should be less than 4MB');
+      return;
+    }
+
+    try {
+      setUploading(true);
+
+      // Convert to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64Image = reader.result as string;
+        // Send to API
+        const response = await fetch('/api/user/picture', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ image: base64Image }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const data = await response.json();
+        setProfileImage(`/uploads/${data.image}`);
+        update({ profilePicture: data.image });
+        toast.success('Profile picture updated successfully');
+      };
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to update profile picture');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const { user, events, reviews } = profileData;
 
   return (
@@ -228,20 +283,33 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         >
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
             <div className="relative">
-              <Image
-                src="/images/user1.jpg"
-                alt="Profile"
-                width={128}
-                height={128}
-                className="rounded-full object-cover border-4 border-gray-200 w-[128px] h-[128px]"
-              />
+              <Avatar className="h-32 w-32">
+                <AvatarImage src={profileImage} />
+                <AvatarFallback>
+                  {profileData.user.username.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               {isEditable && (
-                <button
-                  className="absolute bottom-0 right-0 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all"
-                  onClick={() => toast.info("Profile picture update coming soon")}
-                >
-                  <Edit className="w-4 h-4 text-gray-600" />
-                </button>
+                <>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                  <button
+                    className="absolute bottom-0 right-0 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? (
+                      <Loader2 className="w-4 h-4 text-gray-600 animate-spin" />
+                    ) : (
+                      <Edit className="w-4 h-4 text-gray-600" />
+                    )}
+                  </button>
+                </>
               )}
             </div>
             <div className="text-center md:text-left flex-1">
@@ -263,13 +331,13 @@ export default function UserProfilePage({ params }: { params: { userId: string }
                 <div className="mt-4 flex gap-2 justify-center md:justify-start">
                   <Button
                     variant="outline"
-                    onClick={() => toast.info("Profile edit coming soon")}
+                    onClick={() => toast.success("Profile edit coming soon")}
                   >
                     Edit Profile
                   </Button>
                   <Button
                     variant="secondary"
-                    onClick={() => toast.info("Settings coming soon")}
+                    onClick={() => toast.success("Settings coming soon")}
                   >
                     Settings
                   </Button>

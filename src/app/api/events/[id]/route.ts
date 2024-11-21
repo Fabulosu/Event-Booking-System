@@ -14,7 +14,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     try {
-        const event = await EventModel.findById(id).populate('organizer', 'username');
+        const event = await EventModel.findById(id).populate('organizer', 'username profilePicture');
         if (!event) {
             return NextResponse.json({ error: 'Event not found' }, { status: 404 });
         }

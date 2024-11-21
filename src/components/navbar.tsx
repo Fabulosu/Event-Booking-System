@@ -192,7 +192,7 @@ const UserMenu = ({ session, userBalance, handleSignOut, background, isScrolled 
                 }, "hover:bg-gray-600/50 hover:cursor-pointer flex flex-row items-center gap-2")}
             >
                 <Avatar className='w-[30px] h-[30px]'>
-                    <AvatarImage src={session.user.profilePicture} />
+                    <AvatarImage src={`/uploads/${session.user.profilePicture}`} />
                     <AvatarFallback className={background || isScrolled ? "text-white bg-[#329c75]" : "text-black bg-white"}>
                         {session.user.username.slice(0, 2)}
                     </AvatarFallback>
