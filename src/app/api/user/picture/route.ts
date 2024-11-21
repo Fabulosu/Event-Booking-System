@@ -5,14 +5,6 @@ import { authConfig } from '@/utils/auth';
 import { UserModel } from '@/utils/models';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: '4mb'
-        }
-    }
-};
-
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authConfig);
