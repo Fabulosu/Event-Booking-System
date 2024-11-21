@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { FaRegClock, FaRegCalendar, FaShare } from 'react-icons/fa';
+import { FaRegClock, FaRegCalendar, FaShare, FaStar, FaRegStar } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Navbar from "@/components/navbar";
@@ -10,8 +10,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useSession } from "next-auth/react";
+
+interface Rating {
+    rating: number;
+    reviewText?: string;
+    userId: string;
+    createdAt: Date;
+}
 
 interface Event {
     _id: string;
@@ -28,6 +38,7 @@ interface Event {
         profilePicture?: string;
     };
     imageUrl: string;
+    ratings?: Rating[];
 }
 
 const EventSkeleton = () => (
@@ -51,19 +62,40 @@ export default function EventPage({ params }: { params: { id: string } }) {
     const [event, setEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [userRating, setUserRating] = useState<number>(0);
+    const [hover, setHover] = useState<number>(0);
+    const [review, setReview] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const response = await fetch(`/api/events/${params.id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setEvent(data);
-                } else {
-                    const errorData = await response.json();
+                setLoading(true);
+
+                const eventResponse = await fetch(`/api/events/${params.id}`);
+                if (!eventResponse.ok) {
+                    const errorData = await eventResponse.json();
                     setError(errorData.error);
                     toast.error(errorData.error);
+                    return;
                 }
+                const eventData = await eventResponse.json();
+
+                const ratingsResponse = await fetch(`/api/rating/${params.id}`);
+                if (!ratingsResponse.ok) {
+                    const errorData = await ratingsResponse.json();
+                    console.error("Failed to fetch ratings:", errorData.error);
+                }
+                const ratingsData = ratingsResponse.ok ? await ratingsResponse.json() : [];
+
+                const eventWithRatings = {
+                    ...eventData,
+                    ratings: ratingsData,
+                };
+
+                setEvent(eventWithRatings);
             } catch (err) {
                 setError("Failed to fetch event data.");
                 toast.error("Failed to fetch event data.");
@@ -109,6 +141,161 @@ export default function EventPage({ params }: { params: { id: string } }) {
             </div>
         );
     }
+
+    const StarRating = () => {
+        const stars = [1, 2, 3, 4, 5];
+
+        // Calculate average rating
+        const calculateAverageRating = () => {
+            if (!event?.ratings || event.ratings.length === 0) return 0;
+            const sum = event.ratings.reduce((acc, curr) => acc + curr.rating, 0);
+            return Number((sum / event.ratings.length).toFixed(1));
+        };
+
+        const averageRating = calculateAverageRating();
+
+        const handleRatingSubmit = async (e: React.FormEvent) => {
+            e.preventDefault();
+            if (!userRating) {
+                toast.error("Please select a rating");
+                return;
+            }
+
+            if (status === "unauthenticated") {
+                toast.error("You need to be logged to leave a review!");
+                return;
+            }
+
+            setIsSubmitting(true);
+            try {
+                const response = await fetch(`/api/rating/${params.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: session?.user?.id,
+                        rating: userRating,
+                        reviewText: review.trim() || undefined,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (data.error === 'You have already submitted a review for this event.') {
+                        setShowReviewForm(false);
+                        setReview("");
+                        setUserRating(0)
+                        toast.error("You have already reviewed this event.");
+                    } else {
+                        toast.error("Failed to submit rating.");
+                    }
+                    throw new Error(data.error || 'Failed to submit rating');
+                }
+
+                toast.success("Thank you for your feedback!");
+                setShowReviewForm(false);
+                setReview("");
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
+
+        return (
+            <div className="space-y-4">
+                <div className="flex flex-col items-center space-y-4 pb-4 border-b">
+                    <h4 className="font-semibold">Event Rating</h4>
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center">
+                            <span className="text-3xl font-bold text-gray-900">
+                                {averageRating}
+                            </span>
+                            <span className="text-gray-500 ml-1">/5</span>
+                        </div>
+                        <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                                <FaStar
+                                    key={i}
+                                    className={`w-5 h-5 ${i < Math.round(averageRating)
+                                        ? "text-yellow-400"
+                                        : "text-gray-300"
+                                        }`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                        {event?.ratings?.length || 0} {event?.ratings?.length === 1 ? 'rating' : 'ratings'}
+                    </p>
+                </div>
+
+                <div className="flex flex-col items-center space-y-2 pt-4">
+                    <p className="text-sm text-gray-500">Rate this event</p>
+                    <div className="flex space-x-1">
+                        {stars.map((star) => (
+                            <button
+                                key={star}
+                                className="focus:outline-none transition-colors duration-200"
+                                onClick={() => {
+                                    setUserRating(star);
+                                    setShowReviewForm(true);
+                                }}
+                                onMouseEnter={() => setHover(star)}
+                                onMouseLeave={() => setHover(0)}
+                            >
+                                {star <= (hover || userRating) ? (
+                                    <FaStar className="w-8 h-8 text-yellow-400" />
+                                ) : (
+                                    <FaRegStar className="w-8 h-8 text-yellow-400" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                    {userRating > 0 && (
+                        <p className="text-sm text-gray-600">
+                            Your rating: {userRating} star{userRating !== 1 ? 's' : ''}
+                        </p>
+                    )}
+                </div>
+
+                {/* Review Form */}
+                {showReviewForm && (
+                    <form onSubmit={handleRatingSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="review">Your Review (Optional)</Label>
+                            <Textarea
+                                id="review"
+                                placeholder="Share your experience..."
+                                value={review}
+                                onChange={(e) => setReview(e.target.value)}
+                                className="min-h-[100px]"
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setShowReviewForm(false);
+                                    setUserRating(0);
+                                    setReview("");
+                                }}
+                                disabled={isSubmitting}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? "Submitting..." : "Submit"}
+                            </Button>
+                        </div>
+                    </form>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div className="relative w-full min-h-screen bg-gray-50">
@@ -201,6 +388,11 @@ export default function EventPage({ params }: { params: { id: string } }) {
                                     </div>
 
                                     <div className="w-full lg:w-1/3">
+                                        <Card className="top-24 mb-4">
+                                            <CardContent className="p-4">
+                                                <StarRating />
+                                            </CardContent>
+                                        </Card>
                                         <Card className="sticky top-24">
                                             <CardContent className="p-4">
                                                 <div className="space-y-4">

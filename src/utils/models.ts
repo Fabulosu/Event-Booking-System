@@ -58,7 +58,7 @@ const paymentSchema = new Schema({
 const reviewSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     event: { type: Schema.Types.ObjectId, ref: "Event", required: true },
-    reviewText: { type: String, required: true },
+    reviewText: { type: String },
     rating: { type: Number, min: 1, max: 5, required: true },
     createdAt: { type: Date, default: Date.now },
 });
