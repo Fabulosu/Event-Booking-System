@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     await dbConnect();
 
     try {
-        const events = await EventModel.find({ organizer: userId }).populate("ratings");
+        const events = await EventModel.find({ organizer: userId }).populate("reviews");
 
         if (events.length > 0) {
             return NextResponse.json({ success: true, events });
