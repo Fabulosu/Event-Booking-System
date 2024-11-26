@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { FaRegClock, FaRegCalendar, FaShare, FaStar, FaRegStar } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
@@ -69,36 +69,28 @@ export default function EventPage({ params }: { params: { id: string } }) {
     const [showReviewForm, setShowReviewForm] = useState(false);
     const { data: session, status } = useSession();
 
+    const reviewText = useRef<HTMLTextAreaElement>(null);
+
     useEffect(() => {
         const fetchEvent = async () => {
             try {
                 setLoading(true);
 
-                const eventResponse = await fetch(`/api/events/${params.id}`);
-                if (!eventResponse.ok) {
-                    const errorData = await eventResponse.json();
-                    setError(errorData.error);
-                    toast.error(errorData.error);
+                const response = await fetch(`/api/events/${params.id}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setError(errorData.message || "Failed to fetch event data.");
+                    toast.error(errorData.message || "Failed to fetch event data.");
                     return;
                 }
-                const eventData = await eventResponse.json();
 
-                console.log(eventData)
+                const eventData = await response.json();
 
-                const ratingsResponse = await fetch(`/api/rating/${params.id}`);
-                if (!ratingsResponse.ok) {
-                    const errorData = await ratingsResponse.json();
-                    console.error("Failed to fetch ratings:", errorData.error);
-                }
-                const ratingsData = ratingsResponse.ok ? await ratingsResponse.json() : [];
+                console.log(eventData);
 
-                const eventWithRatings = {
-                    ...eventData,
-                    ratings: ratingsData,
-                };
-
-                setEvent(eventWithRatings);
+                setEvent(eventData);
             } catch (err) {
+                console.error("Error fetching event data:", err);
                 setError("Failed to fetch event data.");
                 toast.error("Failed to fetch event data.");
             } finally {
@@ -147,14 +139,11 @@ export default function EventPage({ params }: { params: { id: string } }) {
     const StarRating = () => {
         const stars = [1, 2, 3, 4, 5];
 
-        // Calculate average rating
-        const calculateAverageRating = () => {
+        const averageRating = useMemo(() => {
             if (!event?.ratings || event.ratings.length === 0) return 0;
             const sum = event.ratings.reduce((acc, curr) => acc + curr.rating, 0);
             return Number((sum / event.ratings.length).toFixed(1));
-        };
-
-        const averageRating = calculateAverageRating();
+        }, [event?.ratings]);
 
         const handleRatingSubmit = async (e: React.FormEvent) => {
             e.preventDefault();
@@ -178,7 +167,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                     body: JSON.stringify({
                         userId: session?.user?.id,
                         rating: userRating,
-                        reviewText: review.trim() || undefined,
+                        reviewText: reviewText.current?.value.trim() || undefined,
                     }),
                 });
 
@@ -271,8 +260,8 @@ export default function EventPage({ params }: { params: { id: string } }) {
                             <Textarea
                                 id="review"
                                 placeholder="Share your experience..."
-                                value={review}
-                                onChange={(e) => setReview(e.target.value)}
+                                defaultValue={review}
+                                ref={reviewText}
                                 className="min-h-[100px]"
                             />
                         </div>
