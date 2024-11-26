@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaRegClock, FaRegCalendar, FaShare, FaStar, FaRegStar } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
@@ -139,11 +139,13 @@ export default function EventPage({ params }: { params: { id: string } }) {
     const StarRating = () => {
         const stars = [1, 2, 3, 4, 5];
 
-        const averageRating = useMemo(() => {
+        const calculateAverageRating = () => {
             if (!event?.ratings || event.ratings.length === 0) return 0;
             const sum = event.ratings.reduce((acc, curr) => acc + curr.rating, 0);
             return Number((sum / event.ratings.length).toFixed(1));
-        }, [event?.ratings]);
+        };
+        const averageRating = calculateAverageRating();
+
 
         const handleRatingSubmit = async (e: React.FormEvent) => {
             e.preventDefault();
