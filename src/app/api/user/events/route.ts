@@ -7,8 +7,23 @@ export async function GET(req: NextRequest) {
     const userId = url.searchParams.get("userId");
 
     await dbConnect();
-    const events = await EventModel.find({ organizer: userId });
 
-    if (events) return NextResponse.json({ success: true, events });
-    else return NextResponse.json({ success: false, message: "This user doesn't have any events!" }, { status: 200 });
+    try {
+        const events = await EventModel.find({ organizer: userId }).populate("ratings");
+
+        if (events.length > 0) {
+            return NextResponse.json({ success: true, events });
+        } else {
+            return NextResponse.json(
+                { success: false, message: "This user doesn't have any events!" },
+                { status: 404 }
+            );
+        }
+    } catch (error) {
+        console.error("Error fetching events with ratings:", error);
+        return NextResponse.json(
+            { success: false, message: "Failed to fetch events." },
+            { status: 500 }
+        );
+    }
 }

@@ -7,6 +7,7 @@ const userSchema = new Schema({
     balance: { type: Number, required: true, default: 0 },
     role: { type: String, enum: ["user", "organizer", "admin"], default: "user" },
     public_email: { type: Boolean, required: true, default: false },
+    public_profile: { type: Boolean, required: true, default: true },
     profilePicture: { type: String },
     refreshTokens: [{ type: String }],
     createdAt: { type: Date, default: Date.now },

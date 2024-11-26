@@ -16,15 +16,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 export interface User {
   _id: string;
   username: string;
   email: string;
   public_email: boolean;
+  public_profile: boolean;
   profilePicture?: string;
   role: "user" | "organizer" | "admin";
   balance: number;
@@ -121,7 +123,7 @@ const ReviewCard = ({ review }: { review: Review }) => (
     <div className="flex items-start gap-4">
       <div className="relative w-10 h-10">
         <Image
-          src={`uploads/${review.user.profilePicture}`}
+          src={`/uploads/${review.user.profilePicture}`}
           alt={review.user.username}
           fill
           className="rounded-full object-cover"
@@ -166,6 +168,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileImage, setProfileImage] = useState("");
+
   useEffect(() => {
     if (params.userId) {
       const fetchProfileData = async () => {
@@ -174,6 +177,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
           const response = await axios.get(`/api/user/${params.userId}`);
           setProfileData(response.data);
           setProfileImage(`/uploads/${response.data.user.profilePicture}`);
+
           if (session?.user.id === params.userId) {
             setIsEditable(true);
           }
@@ -220,17 +224,35 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     );
   }
 
+  if (!profileData.user.public_profile && !isEditable) {
+    return (
+      <div className="bg-gray-50 min-h-screen">
+        <Navbar />
+        <div className="container flex justify-center items-center h-screen mx-auto pt-24 px-4 sm:px-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-800">
+              This profile is private!
+            </h1>
+            <Link href="/">
+              <Button variant="link" className="mt-4">
+                Return to Home
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.includes('image/')) {
       toast.error('Please upload an image file');
       return;
     }
 
-    // Validate file size (4MB limit)
     if (file.size > 4 * 1024 * 1024) {
       toast.error('Image size should be less than 4MB');
       return;
@@ -239,12 +261,10 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     try {
       setUploading(true);
 
-      // Convert to base64
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = async () => {
         const base64Image = reader.result as string;
-        // Send to API
         const response = await fetch('/api/user/picture', {
           method: 'POST',
           headers: {
@@ -329,18 +349,12 @@ export default function UserProfilePage({ params }: { params: { userId: string }
               </div>
               {isEditable && (
                 <div className="mt-4 flex gap-2 justify-center md:justify-start">
-                  <Button
-                    variant="outline"
-                    onClick={() => toast.success("Profile edit coming soon")}
-                  >
-                    Edit Profile
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => toast.success("Settings coming soon")}
+                  <Link
+                    href="/settings"
+                    className={cn(buttonVariants({ variant: "secondary" }))}
                   >
                     Settings
-                  </Button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -372,7 +386,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
               <div className="space-y-4">
                 {reviews.map((review) => (
                   <ReviewCard key={review._id} review={review} />
-                ))}
+                )).reverse()}
               </div>
             ) : (
               <div className="text-center py-8">
